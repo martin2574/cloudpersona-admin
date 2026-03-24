@@ -1,0 +1,20 @@
+YourQ Admin 빌드 & 실행
+========================
+
+# 빌드 (Vite)
+cd /home/ubuntu/cloudpersona/cloudpersona-admin
+npm run build
+
+# systemd 서비스 (프로덕션)
+sudo systemctl restart admin
+sudo systemctl status admin
+journalctl -u admin -f
+
+# 수동 실행 (개발/디버깅)
+cd /home/ubuntu/cloudpersona/cloudpersona-admin
+node --env-file=.env server.js
+
+# 주의사항
+- .env에 ADMIN_API_SECRET 필수 (없으면 인증 에러)
+- server.js에 dotenv 없음 → 반드시 --env-file=.env 플래그 사용
+- 빌드 결과물은 dist/ 폴더 → server.js가 정적 파일로 서빙
