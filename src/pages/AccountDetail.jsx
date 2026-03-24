@@ -11,9 +11,9 @@ import { getRecord, getList, updateRecord, changeAccountType, deleteAccount } fr
 import { shortId, formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 
-const STATUS_VARIANT = { active: "success", suspended: "warning", deleted: "destructive" };
+const STATUS_VARIANT = { active: "success", deleted: "destructive" };
 const STATUS_FIELDS = [
-  { key: "status", label: "Status", type: "select", options: ["active", "suspended", "deleted"] },
+  { key: "status", label: "Status", type: "select", options: ["active", "deleted"] },
 ];
 const TYPE_FIELDS = [
   { key: "type", label: "Type", type: "select", options: ["LIVE", "TEST"] },
