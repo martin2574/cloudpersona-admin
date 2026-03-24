@@ -9,6 +9,7 @@ async function request(path, options = {}) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error?.message || res.statusText);
   }
+  if (res.status === 204) return null;
   return res.json();
 }
 
@@ -37,6 +38,16 @@ export function updateRecord(table, id, data) {
 // Member 잠금 해제
 export function unlockMember(id) {
   return request(`/members/${id}/unlock`, { method: "PATCH" });
+}
+
+// Account Type 변경 (CL-001.1-04)
+export function changeAccountType(id, type) {
+  return request(`/accounts/${id}/type`, { method: "PATCH", body: JSON.stringify({ type }) });
+}
+
+// Account 삭제 (CL-001.1-04)
+export function deleteAccount(id) {
+  return request(`/accounts/${id}`, { method: "DELETE" });
 }
 
 // Dashboard 통계

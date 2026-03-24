@@ -40,6 +40,9 @@ app.all("/api/{*path}", async (req, res) => {
       },
       ...(!["GET", "HEAD", "DELETE"].includes(req.method) && { body: JSON.stringify(req.body) }),
     });
+    if (resp.status === 204) {
+      return res.status(204).end();
+    }
     const data = await resp.json();
     res.status(resp.status).json(data);
   } catch (err) {
