@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import DataTable from "@/components/DataTable";
 import FormDialog from "@/components/FormDialog";
-import { getRecord, getList, updateRecord } from "@/api";
+import { getRecord, getList, updateRecord, changeAccountType, deleteAccount } from "@/api";
 import { shortId, formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -14,11 +15,17 @@ const STATUS_VARIANT = { active: "success", suspended: "warning", deleted: "dest
 const STATUS_FIELDS = [
   { key: "status", label: "Status", type: "select", options: ["active", "suspended", "deleted"] },
 ];
+const TYPE_FIELDS = [
+  { key: "type", label: "Type", type: "select", options: ["LIVE", "TEST"] },
+];
 
 export default function AccountDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [account, setAccount] = useState(null);
   const [dialog, setDialog] = useState(false);
+  const [typeDialog, setTypeDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
 
   function load() {
     getRecord("accounts", id).then(setAccount).catch((e) => toast.error(e.message));
@@ -37,6 +44,27 @@ export default function AccountDetail() {
     }
   }
 
+  async function handleTypeChange(formData) {
+    try {
+      await changeAccountType(id, formData.type);
+      toast.success("Type updated");
+      setTypeDialog(false);
+      load();
+    } catch (e) {
+      toast.error(e.message);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      await deleteAccount(id);
+      toast.success("Account deleted");
+      navigate("/accounts");
+    } catch (e) {
+      toast.error(e.message);
+    }
+  }
+
   if (!account) return <p className="text-muted-foreground">Loading...</p>;
 
   return (
@@ -48,9 +76,18 @@ export default function AccountDetail() {
           <CardTitle className="flex items-center gap-3">
             {account.name || account.slug}
             <Badge variant={STATUS_VARIANT[account.status]}>{account.status}</Badge>
+            <Badge variant={account.type === "TEST" ? "warning" : "secondary"}>{account.type}</Badge>
             <Button variant="outline" size="sm" onClick={() => setDialog(true)}>
               Change Status
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setTypeDialog(true)}>
+              Change Type
+            </Button>
+            {account.type === "TEST" && (
+              <Button variant="destructive" size="sm" onClick={() => setDeleteDialog(true)}>
+                Delete
+              </Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -100,6 +137,30 @@ export default function AccountDetail() {
         initialData={account}
         onSubmit={handleStatusChange}
       />
+
+      <FormDialog
+        open={typeDialog}
+        onOpenChange={setTypeDialog}
+        title="Change Account Type"
+        fields={TYPE_FIELDS}
+        initialData={account}
+        onSubmit={handleTypeChange}
+      />
+
+      <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Account</DialogTitle>
+            <DialogDescription>
+              Account <strong>{account.name || account.slug}</strong>와 관련된 모든 데이터(Members, Workspaces, Sessions 등)가 영구 삭제됩니다. 되돌릴 수 없습니다.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setDeleteDialog(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
