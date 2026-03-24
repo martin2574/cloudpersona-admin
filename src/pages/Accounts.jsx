@@ -9,7 +9,7 @@ import { getList, updateRecord } from "@/api";
 import { shortId, formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 
-const STATUS_VARIANT = { active: "success", suspended: "warning", deleted: "destructive" };
+const STATUS_VARIANT = { active: "success", deleted: "destructive" };
 
 const COLUMNS = [
   { key: "id", label: "ID", render: (v) => <span className="font-mono text-xs">{shortId(v)}</span> },
@@ -26,7 +26,7 @@ const COLUMNS = [
 ];
 
 const STATUS_FIELDS = [
-  { key: "status", label: "Status", type: "select", options: ["active", "suspended", "deleted"] },
+  { key: "status", label: "Status", type: "select", options: ["active", "deleted"] },
 ];
 
 export default function Accounts() {
@@ -80,7 +80,6 @@ export default function Accounts() {
         >
           <option value="">All Status</option>
           <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
           <option value="deleted">Deleted</option>
         </select>
       </div>
