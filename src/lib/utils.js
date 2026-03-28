@@ -1,9 +1,4 @@
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
+export { cn } from "@yourq/ui";
 
 export function shortId(id) {
   if (!id) return "—";

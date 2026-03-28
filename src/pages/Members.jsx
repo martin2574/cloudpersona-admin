@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Unlock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@yourq/ui";
 import { Badge } from "@/components/ui/badge";
 import DataTable from "@/components/DataTable";
 import { getList, unlockMember } from "@/api";
