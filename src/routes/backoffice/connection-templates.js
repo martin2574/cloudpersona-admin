@@ -52,7 +52,7 @@ export default function connectionTemplatesRouter(db) {
 
   // 생성 (Layer 1/2 검증)
   router.post("/", async (req, res) => {
-    const { id, serviceType, name, version, categoryId, spec } = req.body;
+    const { id, serviceType, name, description, version, categoryId, icon, spec } = req.body;
 
     // spec 검증
     const validation = validateSpec(spec);
@@ -70,7 +70,7 @@ export default function connectionTemplatesRouter(db) {
 
     try {
       const template = await db.connectionTemplate.create({
-        data: { ...(id && { id }), serviceType, name, version, categoryId, spec },
+        data: { ...(id && { id }), serviceType, name, description: description || "", version, categoryId, icon: icon || null, spec },
         include: { category: true },
       });
       res.status(201).json(template);
@@ -82,7 +82,7 @@ export default function connectionTemplatesRouter(db) {
 
   // 수정 (Layer 1/2 검증)
   router.put("/:id", async (req, res) => {
-    const { serviceType, name, version, categoryId, spec } = req.body;
+    const { serviceType, name, description, version, categoryId, icon, spec } = req.body;
 
     const existing = await db.connectionTemplate.findUnique({ where: { id: req.params.id } });
     if (!existing) return res.status(404).json({ error: "Connection Template not found" });
@@ -111,8 +111,10 @@ export default function connectionTemplatesRouter(db) {
         data: {
           ...(serviceType !== undefined && { serviceType }),
           ...(name !== undefined && { name }),
+          ...(description !== undefined && { description }),
           ...(version !== undefined && { version }),
           ...(categoryId !== undefined && { categoryId }),
+          ...(icon !== undefined && { icon: icon || null }),
           ...(spec !== undefined && { spec }),
         },
         include: { category: true },

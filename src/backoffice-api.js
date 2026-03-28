@@ -92,3 +92,17 @@ export function updateSkillTemplate(id, data) {
 export function deleteSkillTemplate(id) {
   return request(`/skill-templates/${id}`, { method: "DELETE" });
 }
+
+// ── Reconciliation ──
+
+export function getReconcileEnvs() {
+  return request("/reconcile/envs");
+}
+
+export function reconcileDryRun(env) {
+  return request("/reconcile", { method: "POST", body: JSON.stringify({ env, mode: "dry-run" }) });
+}
+
+export function reconcileExecute(env) {
+  return request("/reconcile", { method: "POST", body: JSON.stringify({ env, mode: "execute" }) });
+}
