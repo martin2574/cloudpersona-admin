@@ -1,0 +1,60 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../../node_modules/@yourq/prisma-backoffice"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("BACKOFFICE_DATABASE_URL")
+  schemas  = ["template"]
+}
+
+model Category {
+  id        String   @id @db.VarChar
+  name      String   @db.VarChar
+  icon      String   @db.VarChar
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  connectionTemplates ConnectionTemplate[]
+  skillTemplates      SkillTemplate[]
+
+  @@map("categories")
+  @@schema("template")
+}
+
+model ConnectionTemplate {
+  id          String   @id @default(uuid()) @db.Uuid
+  serviceType String   @map("service_type") @db.VarChar
+  name        String   @db.VarChar
+  version     String   @db.VarChar
+  categoryId  String   @map("category_id") @db.VarChar
+  spec        Json
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  category       Category        @relation(fields: [categoryId], references: [id])
+  skillTemplates SkillTemplate[]
+
+  @@map("connection_templates")
+  @@schema("template")
+}
+
+model SkillTemplate {
+  id                   String   @id @default(uuid()) @db.Uuid
+  skillType            String   @map("skill_type") @db.VarChar
+  name                 String   @db.VarChar
+  version              String   @db.VarChar
+  categoryId           String   @map("category_id") @db.VarChar
+  connectionTemplateId String?  @map("connection_template_id") @db.Uuid
+  spec                 Json
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  category           Category            @relation(fields: [categoryId], references: [id])
+  connectionTemplate ConnectionTemplate? @relation(fields: [connectionTemplateId], references: [id])
+
+  @@map("skill_templates")
+  @@schema("template")
+}
