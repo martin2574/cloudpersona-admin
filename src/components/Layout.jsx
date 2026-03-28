@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { Building2, Users, LayoutDashboard, Sun, Moon } from "lucide-react";
+import { Building2, Users, LayoutDashboard, Sun, Moon, Blocks, Cable, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -10,6 +10,14 @@ const NAV = [
     items: [
       { to: "/accounts", label: "Accounts", icon: Building2 },
       { to: "/members", label: "Members", icon: Users },
+    ],
+  },
+  {
+    section: "Backoffice",
+    items: [
+      { to: "/backoffice/categories", label: "Categories", icon: Blocks },
+      { to: "/backoffice/connection-templates", label: "Connections", icon: Cable },
+      { to: "/backoffice/skill-templates", label: "Skills", icon: Wrench },
     ],
   },
 ];
