@@ -5,6 +5,7 @@ import { PrismaClient } from "@yourq/prisma-backoffice";
 import categoriesRouter from "./src/routes/backoffice/categories.js";
 import connectionTemplatesRouter from "./src/routes/backoffice/connection-templates.js";
 import skillTemplatesRouter from "./src/routes/backoffice/skill-templates.js";
+import reconcileRouter from "./src/routes/backoffice/reconcile.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -12,6 +13,12 @@ const PORT = process.env.PORT || 3058;
 const API_SERVER = process.env.API_SERVER_URL || "http://localhost:3057";
 const ADMIN_SECRET = process.env.ADMIN_API_SECRET;
 const backofficeDb = new PrismaClient();
+
+// Reconciliation 대상 환경
+const RECONCILE_ENVS = {
+  test: process.env.API_SERVER_TEST_URL || API_SERVER,
+  prod: process.env.API_SERVER_PROD_URL,
+};
 
 app.use(express.json());
 
@@ -28,6 +35,10 @@ function requireAdminSecret(req, res, next) {
 app.use("/api/backoffice/categories", requireAdminSecret, categoriesRouter(backofficeDb));
 app.use("/api/backoffice/connection-templates", requireAdminSecret, connectionTemplatesRouter(backofficeDb));
 app.use("/api/backoffice/skill-templates", requireAdminSecret, skillTemplatesRouter(backofficeDb));
+app.use("/api/backoffice/reconcile", requireAdminSecret, reconcileRouter(backofficeDb, {
+  envs: RECONCILE_ENVS,
+  adminSecret: ADMIN_SECRET,
+}));
 
 // Dashboard 통계 (BFF 조합 — API Server에 /admin/stats 없음)
 app.get("/api/stats", async (req, res) => {

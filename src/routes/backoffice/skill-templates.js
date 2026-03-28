@@ -53,7 +53,7 @@ export default function skillTemplatesRouter(db) {
 
   // 생성 (Layer 1/2 검증)
   router.post("/", async (req, res) => {
-    const { id, skillType, name, version, categoryId, connectionTemplateId, spec } = req.body;
+    const { id, skillType, name, description, version, categoryId, connectionTemplateId, icon, spec } = req.body;
 
     // spec 검증
     const validation = validateSpec(spec);
@@ -85,9 +85,11 @@ export default function skillTemplatesRouter(db) {
           ...(id && { id }),
           skillType,
           name,
+          description: description || "",
           version,
           categoryId,
           connectionTemplateId: connectionTemplateId || null,
+          icon: icon || null,
           spec,
         },
         include: { category: true, connectionTemplate: true },
@@ -101,7 +103,7 @@ export default function skillTemplatesRouter(db) {
 
   // 수정 (Layer 1/2 검증)
   router.put("/:id", async (req, res) => {
-    const { skillType, name, version, categoryId, connectionTemplateId, spec } = req.body;
+    const { skillType, name, description, version, categoryId, connectionTemplateId, icon, spec } = req.body;
 
     const existing = await db.skillTemplate.findUnique({ where: { id: req.params.id } });
     if (!existing) return res.status(404).json({ error: "Skill Template not found" });
@@ -140,9 +142,11 @@ export default function skillTemplatesRouter(db) {
         data: {
           ...(skillType !== undefined && { skillType }),
           ...(name !== undefined && { name }),
+          ...(description !== undefined && { description }),
           ...(version !== undefined && { version }),
           ...(categoryId !== undefined && { categoryId }),
           ...(connectionTemplateId !== undefined && { connectionTemplateId: connectionTemplateId || null }),
+          ...(icon !== undefined && { icon: icon || null }),
           ...(spec !== undefined && { spec }),
         },
         include: { category: true, connectionTemplate: true },

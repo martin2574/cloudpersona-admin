@@ -25,36 +25,44 @@ model Category {
 }
 
 model ConnectionTemplate {
-  id          String   @id @default(uuid()) @db.Uuid
-  serviceType String   @map("service_type") @db.VarChar
-  name        String   @db.VarChar
-  version     String   @db.VarChar
-  categoryId  String   @map("category_id") @db.VarChar
-  spec        Json
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id           String    @id @default(uuid()) @db.Uuid
+  serviceType  String    @map("service_type") @db.VarChar
+  name         String    @db.VarChar
+  description  String    @default("")
+  version      String    @default("1.0.0") @db.VarChar
+  categoryId   String    @map("category_id") @db.VarChar
+  icon         String?   @db.VarChar
+  spec         Json      @default("{}")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  deprecatedAt DateTime? @map("deprecated_at") @db.Timestamptz
 
   category       Category        @relation(fields: [categoryId], references: [id])
   skillTemplates SkillTemplate[]
 
+  @@unique([serviceType, version])
   @@map("connection_templates")
   @@schema("template")
 }
 
 model SkillTemplate {
-  id                   String   @id @default(uuid()) @db.Uuid
-  skillType            String   @map("skill_type") @db.VarChar
-  name                 String   @db.VarChar
-  version              String   @db.VarChar
-  categoryId           String   @map("category_id") @db.VarChar
-  connectionTemplateId String?  @map("connection_template_id") @db.Uuid
-  spec                 Json
-  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                   String    @id @default(uuid()) @db.Uuid
+  skillType            String    @map("skill_type") @db.VarChar
+  name                 String    @db.VarChar
+  description          String    @default("")
+  version              String    @default("1.0.0") @db.VarChar
+  categoryId           String    @map("category_id") @db.VarChar
+  connectionTemplateId String?   @map("connection_template_id") @db.Uuid
+  icon                 String?   @db.VarChar
+  spec                 Json      @default("{}")
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  deprecatedAt         DateTime? @map("deprecated_at") @db.Timestamptz
 
   category           Category            @relation(fields: [categoryId], references: [id])
   connectionTemplate ConnectionTemplate? @relation(fields: [connectionTemplateId], references: [id])
 
+  @@unique([skillType, version])
   @@map("skill_templates")
   @@schema("template")
 }

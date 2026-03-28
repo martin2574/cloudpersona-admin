@@ -10,6 +10,7 @@ import ConnectionTemplates from "@/pages/ConnectionTemplates";
 import ConnectionTemplateDetail from "@/pages/ConnectionTemplateDetail";
 import SkillTemplates from "@/pages/SkillTemplates";
 import SkillTemplateDetail from "@/pages/SkillTemplateDetail";
+import Reconcile from "@/pages/Reconcile";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: "/backoffice/connection-templates/:id", element: <ConnectionTemplateDetail /> },
       { path: "/backoffice/skill-templates", element: <SkillTemplates /> },
       { path: "/backoffice/skill-templates/:id", element: <SkillTemplateDetail /> },
+      { path: "/backoffice/reconcile", element: <Reconcile /> },
     ],
   },
 ]);
