@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@yourq/ui";
 
 export default function FormDialog({ open, onOpenChange, title, fields, initialData, onSubmit }) {
   const [form, setForm] = useState({});

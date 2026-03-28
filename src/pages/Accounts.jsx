@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@yourq/ui";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import DataTable from "@/components/DataTable";
 import FormDialog from "@/components/FormDialog";
 import { getList, updateRecord } from "@/api";

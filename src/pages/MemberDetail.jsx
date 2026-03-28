@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Unlock } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from "@yourq/ui";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import DataTable from "@/components/DataTable";
 import { getRecord, unlockMember } from "@/api";
