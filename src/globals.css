@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "@yourq/tokens/styles.css";
 
+/* @yourq/ui 컴포넌트가 사용하는 Tailwind 클래스를 content scan에 포함 */
+@source "../../cloudpersona-ui/packages/ui/src";
 /* Admin 전용 토큰 — @yourq/tokens에 없는 것만 추가 */
 :root {
   --destructive-foreground: #FFFFFF;
