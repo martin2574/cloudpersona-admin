@@ -1,14 +1,33 @@
 import express from "express";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { PrismaClient } from "@yourq/prisma-backoffice";
+import categoriesRouter from "./src/routes/backoffice/categories.js";
+import connectionTemplatesRouter from "./src/routes/backoffice/connection-templates.js";
+import skillTemplatesRouter from "./src/routes/backoffice/skill-templates.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3058;
 const API_SERVER = process.env.API_SERVER_URL || "http://localhost:3057";
 const ADMIN_SECRET = process.env.ADMIN_API_SECRET;
+const backofficeDb = new PrismaClient();
 
 app.use(express.json());
+
+// Backoffice API 인증
+function requireAdminSecret(req, res, next) {
+  const secret = req.headers["x-admin-secret"];
+  if (secret !== ADMIN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+}
+
+// Backoffice CRUD (Prisma 직접 접근)
+app.use("/api/backoffice/categories", requireAdminSecret, categoriesRouter(backofficeDb));
+app.use("/api/backoffice/connection-templates", requireAdminSecret, connectionTemplatesRouter(backofficeDb));
+app.use("/api/backoffice/skill-templates", requireAdminSecret, skillTemplatesRouter(backofficeDb));
 
 // Dashboard 통계 (BFF 조합 — API Server에 /admin/stats 없음)
 app.get("/api/stats", async (req, res) => {
