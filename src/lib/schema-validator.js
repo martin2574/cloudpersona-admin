@@ -49,8 +49,10 @@ export function validateSpec(spec) {
   // uiSchema 필드가 jsonSchema.properties에 대응하는지 검증
   if (spec.jsonSchema.properties && typeof spec.jsonSchema.properties === "object") {
     const schemaProps = Object.keys(spec.jsonSchema.properties);
+    const RJSF_META_KEYS = new Set(["definitions", "dependencies"]);
     for (const uiKey of Object.keys(spec.uiSchema)) {
       if (uiKey.startsWith("ui:")) continue; // ui:order 등 글로벌 옵션 스킵
+      if (RJSF_META_KEYS.has(uiKey)) continue; // RJSF/FormBuilder 예약 키 스킵
       if (!schemaProps.includes(uiKey)) {
         errors.push({
           layer: 2,
