@@ -17,5 +17,10 @@ export const logger = pino({
   },
   base: { service: "admin", pid: process.pid, hostname: os.hostname() },
   timestamp: pino.stdTimeFunctions.isoTime,
-  redact: ["*.password", "*.secret", "*.apiToken"],
+  redact: [
+    "*.password", "*.secret", "*.apiToken",
+    'req.headers["x-admin-secret"]',
+    "req.headers.authorization",
+    "req.headers.cookie",
+  ],
 });
