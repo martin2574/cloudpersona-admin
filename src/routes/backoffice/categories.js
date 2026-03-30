@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { logger } from "../../lib/logger.js";
 
 export default function categoriesRouter(db) {
   const router = Router();
@@ -11,6 +12,7 @@ export default function categoriesRouter(db) {
       });
       res.json(categories);
     } catch (err) {
+      logger.error({ err }, "category operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -24,6 +26,7 @@ export default function categoriesRouter(db) {
       if (!category) return res.status(404).json({ error: "Category not found" });
       res.json(category);
     } catch (err) {
+      logger.error({ err }, "category operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -40,6 +43,7 @@ export default function categoriesRouter(db) {
       });
       res.status(201).json(category);
     } catch (err) {
+      logger.error({ err }, "category operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -61,6 +65,7 @@ export default function categoriesRouter(db) {
       });
       res.json(updated);
     } catch (err) {
+      logger.error({ err }, "category operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -82,6 +87,7 @@ export default function categoriesRouter(db) {
       res.status(204).end();
     } catch (err) {
       if (err.code === "P2025") return res.status(404).json({ error: "Category not found" });
+      logger.error({ err }, "category operation failed");
       res.status(500).json({ error: err.message });
     }
   });

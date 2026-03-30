@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { validateSpec } from "../../lib/schema-validator.js";
+import { logger } from "../../lib/logger.js";
 
 export default function connectionTemplatesRouter(db) {
   const router = Router();
@@ -32,6 +33,7 @@ export default function connectionTemplatesRouter(db) {
       ]);
       res.json({ data, total, page: parseInt(page), limit: take });
     } catch (err) {
+      logger.error({ err }, "connection template operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -46,6 +48,7 @@ export default function connectionTemplatesRouter(db) {
       if (!template) return res.status(404).json({ error: "Connection Template not found" });
       res.json(template);
     } catch (err) {
+      logger.error({ err }, "connection template operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -76,6 +79,7 @@ export default function connectionTemplatesRouter(db) {
       res.status(201).json(template);
     } catch (err) {
       if (err.code === "P2002") return res.status(409).json({ error: "Duplicate id" });
+      logger.error({ err }, "connection template operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -121,6 +125,7 @@ export default function connectionTemplatesRouter(db) {
       });
       res.json(updated);
     } catch (err) {
+      logger.error({ err }, "connection template operation failed");
       res.status(500).json({ error: err.message });
     }
   });
@@ -141,6 +146,7 @@ export default function connectionTemplatesRouter(db) {
       res.status(204).end();
     } catch (err) {
       if (err.code === "P2025") return res.status(404).json({ error: "Connection Template not found" });
+      logger.error({ err }, "connection template operation failed");
       res.status(500).json({ error: err.message });
     }
   });
