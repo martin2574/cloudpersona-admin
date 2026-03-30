@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { reconcile } from "../../services/reconcile.js";
+import { logger } from "../../lib/logger.js";
 
 export default function reconcileRouter(db, { envs, adminSecret }) {
   const router = Router();
@@ -33,6 +34,7 @@ export default function reconcileRouter(db, { envs, adminSecret }) {
       const result = await reconcile(db, { apiServerUrl: envs[env], adminSecret, mode });
       res.json({ ...result, env });
     } catch (err) {
+      logger.error({ err, env, mode }, "reconcile failed");
       res.status(500).json({ error: err.message });
     }
   });

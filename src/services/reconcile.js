@@ -5,6 +5,7 @@
  * - dry-run: diff만 계산, API Server 변경 없음
  * - execute: diff 계산 후 FK 순서대로 PUT upsert
  */
+import { logger } from "../lib/logger.js";
 
 // 비교 대상 필드 (timestamps 제외)
 const COMPARE_FIELDS = {
@@ -164,6 +165,7 @@ async function deleteTarget(apiServerUrl, adminSecret, resource, id) {
  * @param {{ apiServerUrl: string, adminSecret: string, mode: "dry-run"|"execute" }} opts
  */
 export async function reconcile(db, { apiServerUrl, adminSecret, mode }) {
+  logger.info({ mode, apiServerUrl }, "reconcile started");
   // 1. Backoffice 데이터 조회 (source)
   const [srcCategories, srcConnections, srcSkills] = await Promise.all([
     db.category.findMany({ orderBy: { sortOrder: "asc" } }),
@@ -220,6 +222,7 @@ export async function reconcile(db, { apiServerUrl, adminSecret, mode }) {
           success: true,
         });
       } catch (err) {
+        logger.warn({ err, resource, id: item.id }, "reconcile item upsert failed");
         results[key].push({
           id: item.id,
           name: item.name,
@@ -247,6 +250,7 @@ export async function reconcile(db, { apiServerUrl, adminSecret, mode }) {
         await deleteTarget(apiServerUrl, adminSecret, resource, item.id);
         results[key].push({ id: item.id, name: item.name, action: "delete", success: true });
       } catch (err) {
+        logger.warn({ err, resource, id: item.id }, "reconcile item delete failed");
         results[key].push({ id: item.id, name: item.name, action: "delete", success: false, error: err.message });
         stopped = true;
         break;
@@ -262,5 +266,6 @@ export async function reconcile(db, { apiServerUrl, adminSecret, mode }) {
     };
   }
 
+  logger.info({ mode, summary: executeSummary, stopped }, "reconcile completed");
   return { mode: "execute", results, summary: executeSummary, stopped };
 }

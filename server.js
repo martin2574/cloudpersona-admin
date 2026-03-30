@@ -1,7 +1,9 @@
 import express from "express";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import pinoHttp from "pino-http";
 import { PrismaClient } from "@yourq/prisma-backoffice";
+import { logger } from "./src/lib/logger.js";
 import categoriesRouter from "./src/routes/backoffice/categories.js";
 import connectionTemplatesRouter from "./src/routes/backoffice/connection-templates.js";
 import skillTemplatesRouter from "./src/routes/backoffice/skill-templates.js";
@@ -21,6 +23,22 @@ const RECONCILE_ENVS = {
 };
 
 app.use(express.json());
+app.use(pinoHttp({
+  logger,
+  autoLogging: { ignore: (req) => req.url === "/api/stats" },
+  customLogLevel(req, res, err) {
+    if (err || res.statusCode >= 500) return "error";
+    return "info";
+  },
+  serializers: {
+    req(req) {
+      return {
+        method: req.method,
+        url: req.url,
+      };
+    },
+  },
+}));
 
 // Backoffice API 인증
 function requireAdminSecret(req, res, next) {
@@ -53,6 +71,7 @@ app.get("/api/stats", async (req, res) => {
       members: members.pagination.total,
     });
   } catch (err) {
+    logger.error({ err }, "stats fetch failed");
     res.status(502).json({ error: "API Server 연결 실패" });
   }
 });
@@ -76,6 +95,7 @@ app.all("/api/{*path}", async (req, res) => {
     const data = await resp.json();
     res.status(resp.status).json(data);
   } catch (err) {
+    logger.error({ err, method: req.method, path }, "bff proxy failed");
     res.status(502).json({ error: "API Server 연결 실패" });
   }
 });
@@ -86,4 +106,4 @@ app.get("{*path}", (req, res) => {
   res.sendFile(join(__dirname, "dist", "index.html"));
 });
 
-app.listen(PORT, () => console.log(`YourQ Admin running on port ${PORT}`));
+app.listen(PORT, () => logger.info({ port: PORT }, "admin server started"));
