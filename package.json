@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "prisma generate --schema=prisma/backoffice/schema.prisma"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
