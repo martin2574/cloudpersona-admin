@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/guard-main-branch.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/guard-db-access.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/guard-db-access.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
