@@ -51,7 +51,7 @@ export default function ConnectionTemplateDetail() {
   }
 
   function handleSpecChange(jsonSchema, uiSchema) {
-    setSpec({ jsonSchema, uiSchema });
+    setSpec((prev) => ({ ...prev, jsonSchema, uiSchema }));
     setDirty(true);
   }
 
