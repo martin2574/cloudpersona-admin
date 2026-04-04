@@ -1,0 +1,1 @@
+../../../workspaces/common/hooks/guard-main-branch.sh
