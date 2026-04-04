@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "cortex": {
+      "type": "sse",
+      "url": "https://mcp.cloudpersona.ai/cortex/sse"
+    },
+    "github": {
+      "type": "sse",
+      "url": "https://mcp.cloudpersona.ai/github/sse"
+    }
+  }
+}
