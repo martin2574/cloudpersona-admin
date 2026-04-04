@@ -68,6 +68,8 @@ export default function SpecPreview({ jsonSchema, uiSchema }) {
               onError={() => {}}
               liveValidate={liveValidate}
               noHtml5Validate
+              omitExtraData
+              liveOmit
             />
           </div>
         ) : (
