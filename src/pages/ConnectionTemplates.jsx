@@ -4,7 +4,6 @@ import { Button, Input } from "@yourq/ui";
 import DataTable from "@/components/DataTable";
 import {
   getConnectionTemplates,
-  createConnectionTemplate,
   deleteConnectionTemplate,
   getCategories,
 } from "@/backoffice-api";
@@ -43,26 +42,12 @@ export default function ConnectionTemplates() {
 
   useEffect(() => { load(); }, [load]);
 
-  async function handleCreate() {
-    try {
-      if (categories.length === 0) {
-        toast.error("카테고리를 먼저 생성해주세요");
-        return;
-      }
-      const result = await createConnectionTemplate({
-        serviceType: "new_service",
-        name: "새 Connection Template",
-        version: "0.1.0",
-        categoryId: categories[0].id,
-        spec: {
-          jsonSchema: { type: "object", properties: {} },
-          uiSchema: {},
-        },
-      });
-      navigate(`/backoffice/connection-templates/${result.id}`);
-    } catch (e) {
-      toast.error(e.message);
+  function handleCreate() {
+    if (categories.length === 0) {
+      toast.error("카테고리를 먼저 생성해주세요");
+      return;
     }
+    navigate("/backoffice/connection-templates/new");
   }
 
   async function handleDelete(row) {

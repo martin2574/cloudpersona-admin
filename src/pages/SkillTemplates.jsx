@@ -4,7 +4,6 @@ import { Button, Input } from "@yourq/ui";
 import DataTable from "@/components/DataTable";
 import {
   getSkillTemplates,
-  createSkillTemplate,
   deleteSkillTemplate,
   getCategories,
 } from "@/backoffice-api";
@@ -44,26 +43,12 @@ export default function SkillTemplates() {
 
   useEffect(() => { load(); }, [load]);
 
-  async function handleCreate() {
-    try {
-      if (categories.length === 0) {
-        toast.error("카테고리를 먼저 생성해주세요");
-        return;
-      }
-      const result = await createSkillTemplate({
-        skillType: "new_skill",
-        name: "새 Skill Template",
-        version: "0.1.0",
-        categoryId: categories[0].id,
-        spec: {
-          jsonSchema: { type: "object", properties: {} },
-          uiSchema: {},
-        },
-      });
-      navigate(`/backoffice/skill-templates/${result.id}`);
-    } catch (e) {
-      toast.error(e.message);
+  function handleCreate() {
+    if (categories.length === 0) {
+      toast.error("카테고리를 먼저 생성해주세요");
+      return;
     }
+    navigate("/backoffice/skill-templates/new");
   }
 
   async function handleDelete(row) {

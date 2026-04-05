@@ -3,39 +3,32 @@ import Ajv from "ajv";
 const ajv = new Ajv({ strict: false, allErrors: true });
 
 /**
- * jsonSchema에서 모든 property 이름을 수집 (top-level + dependencies/oneOf/anyOf)
+ * jsonSchema에서 모든 property 이름을 수집 (임의 깊이 dependencies/oneOf/anyOf/allOf 재귀)
  */
 function collectAllPropertyNames(jsonSchema) {
   const names = new Set();
-
-  if (jsonSchema.properties) {
-    for (const key of Object.keys(jsonSchema.properties)) {
-      names.add(key);
-    }
-  }
-
-  if (jsonSchema.dependencies) {
-    for (const dep of Object.values(jsonSchema.dependencies)) {
-      if (dep.properties) {
-        for (const key of Object.keys(dep.properties)) {
-          names.add(key);
-        }
-      }
-      for (const keyword of ["oneOf", "anyOf"]) {
-        if (Array.isArray(dep[keyword])) {
-          for (const branch of dep[keyword]) {
-            if (branch.properties) {
-              for (const key of Object.keys(branch.properties)) {
-                names.add(key);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
+  walk(jsonSchema);
   return names;
+
+  function walk(node) {
+    if (!node || typeof node !== "object") return;
+    if (node.properties) {
+      for (const [key, value] of Object.entries(node.properties)) {
+        names.add(key);
+        walk(value);
+      }
+    }
+    if (node.dependencies) {
+      for (const dep of Object.values(node.dependencies)) {
+        walk(dep);
+      }
+    }
+    for (const keyword of ["oneOf", "anyOf", "allOf"]) {
+      if (Array.isArray(node[keyword])) {
+        for (const branch of node[keyword]) walk(branch);
+      }
+    }
+  }
 }
 
 /**
