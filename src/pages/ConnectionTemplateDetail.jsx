@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button, Input } from "@yourq/ui";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -7,6 +7,7 @@ import SpecBuilder from "@/components/SpecBuilder";
 import SpecPreview from "@/components/SpecPreview";
 import {
   getConnectionTemplate,
+  createConnectionTemplate,
   updateConnectionTemplate,
   getCategories,
 } from "@/backoffice-api";
@@ -15,35 +16,53 @@ import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 import useUnsavedChanges from "@/hooks/useUnsavedChanges";
 
+const EMPTY_SPEC = { jsonSchema: { type: "object", properties: {} }, uiSchema: {} };
+
 export default function ConnectionTemplateDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const isNew = id === "new";
+
   const [template, setTemplate] = useState(null);
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({
     name: "",
     serviceType: "",
-    version: "",
+    version: "0.1.0",
     categoryId: "",
   });
-  const [spec, setSpec] = useState({ jsonSchema: {}, uiSchema: {} });
+  const [spec, setSpec] = useState(EMPTY_SPEC);
   const [dirty, setDirty] = useState(false);
+  const [loading, setLoading] = useState(!isNew);
   const unsavedDialog = useUnsavedChanges(dirty);
 
   useEffect(() => {
-    Promise.all([getConnectionTemplate(id), getCategories()])
-      .then(([tmpl, cats]) => {
-        setTemplate(tmpl);
-        setCategories(cats);
-        setForm({
-          name: tmpl.name,
-          serviceType: tmpl.serviceType,
-          version: tmpl.version,
-          categoryId: tmpl.categoryId,
-        });
-        setSpec(tmpl.spec || { jsonSchema: { type: "object", properties: {} }, uiSchema: {} });
-      })
-      .catch((e) => toast.error(e.message));
-  }, [id]);
+    if (isNew) {
+      // 신규: 카테고리만 로드하고 빈 폼 표시
+      getCategories()
+        .then((cats) => {
+          setCategories(cats);
+          if (cats.length > 0) setForm((prev) => ({ ...prev, categoryId: cats[0].id }));
+        })
+        .catch((e) => toast.error(e.message));
+    } else {
+      // 수정: 기존 템플릿 + 카테고리 로드
+      Promise.all([getConnectionTemplate(id), getCategories()])
+        .then(([tmpl, cats]) => {
+          setTemplate(tmpl);
+          setCategories(cats);
+          setForm({
+            name: tmpl.name,
+            serviceType: tmpl.serviceType,
+            version: tmpl.version,
+            categoryId: tmpl.categoryId,
+          });
+          setSpec(tmpl.spec || EMPTY_SPEC);
+          setLoading(false);
+        })
+        .catch((e) => toast.error(e.message));
+    }
+  }, [id, isNew]);
 
   function handleFormChange(key, value) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -51,7 +70,7 @@ export default function ConnectionTemplateDetail() {
   }
 
   function handleSpecChange(jsonSchema, uiSchema) {
-    setSpec({ jsonSchema, uiSchema });
+    setSpec((prev) => ({ ...prev, jsonSchema, uiSchema }));
     setDirty(true);
   }
 
@@ -69,16 +88,27 @@ export default function ConnectionTemplateDetail() {
     }
 
     try {
-      const updated = await updateConnectionTemplate(id, { ...form, spec });
-      setTemplate(updated);
-      setDirty(false);
-      toast.success("Saved");
+      if (isNew) {
+        const created = await createConnectionTemplate({ ...form, spec });
+        setDirty(false);
+        toast.success("Created");
+        navigate(`/backoffice/connection-templates/${created.id}`, { replace: true });
+      } else {
+        const updated = await updateConnectionTemplate(id, { ...form, spec });
+        setTemplate(updated);
+        setDirty(false);
+        toast.success("Saved");
+      }
     } catch (e) {
       toast.error(e.message);
     }
   }
 
   function handleCancel() {
+    if (isNew) {
+      navigate("/backoffice/connection-templates");
+      return;
+    }
     if (!template) return;
     setForm({
       name: template.name,
@@ -86,11 +116,11 @@ export default function ConnectionTemplateDetail() {
       version: template.version,
       categoryId: template.categoryId,
     });
-    setSpec(template.spec || { jsonSchema: { type: "object", properties: {} }, uiSchema: {} });
+    setSpec(template.spec || EMPTY_SPEC);
     setDirty(false);
   }
 
-  if (!template) return <p className="text-muted-foreground">Loading...</p>;
+  if (loading) return <p className="text-muted-foreground">Loading...</p>;
 
   return (
     <div>
@@ -102,13 +132,13 @@ export default function ConnectionTemplateDetail() {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">{template.name}</h2>
+        <h2 className="text-2xl font-bold">{isNew ? "New Connection Template" : template.name}</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled={!dirty} onClick={handleCancel}>
+          <Button variant="outline" size="sm" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button size="sm" disabled={!dirty} onClick={handleSave}>
-            Save
+          <Button size="sm" disabled={isNew ? false : !dirty} onClick={handleSave}>
+            {isNew ? "Create" : "Save"}
           </Button>
         </div>
       </div>
@@ -151,9 +181,11 @@ export default function ConnectionTemplateDetail() {
                   </select>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-3">
-                ID: {template.id} | Created: {formatDate(template.createdAt)}
-              </p>
+              {!isNew && (
+                <p className="text-xs text-muted-foreground mt-3">
+                  ID: {template.id} | Created: {formatDate(template.createdAt)}
+                </p>
+              )}
             </CardContent>
           </Card>
 

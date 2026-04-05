@@ -99,7 +99,10 @@ export default function skillTemplatesRouter(db) {
       });
       res.status(201).json(template);
     } catch (err) {
-      if (err.code === "P2002") return res.status(409).json({ error: "Duplicate id" });
+      if (err.code === "P2002") {
+        const fields = err.meta?.target?.join(", ") || "id";
+        return res.status(409).json({ error: `이미 같은 ${fields} 조합이 존재합니다` });
+      }
       logger.error({ err }, "skill template operation failed");
       res.status(500).json({ error: err.message });
     }

@@ -36,7 +36,15 @@ Admin | 백오피스 개발 | Engineering | 보고: 박소장(CTO)
 
 # 4. 교훈 — 직접 겪어야 아는 것
 
-(없음)
+## RJSF + dependencies/oneOf 템플릿 작성 [2026-04-04]
+
+조건부 필드가 있는 Skill/Connection 템플릿 작성 시 반드시 지킬 3가지:
+
+- **조건부 필드는 `dependencies.oneOf[].properties`에 둔다**: top-level `properties`에 두면 분기와 무관하게 항상 표시됨. 숨기려면 dependency 내부로 이동
+- **`dependencies.{key}`에 `properties`+`oneOf` 동시 사용 금지**: RJSF가 트리거 필드의 enum을 교집합으로 좁혀서 라디오에 현재 활성 브랜치 값만 남음(다른 옵션 사라짐). 공통 필드는 각 oneOf 분기에 복제 — `custom_api.md`가 정답 패턴
+- **oneOf 분기 트리거 필드는 `default` 필수**: 없으면 초기 렌더링 시 어느 분기도 활성 안 돼서 조건부 필드 안 보임
+
+정답 패턴: `templates/connection/custom_api.md`. 적용 사례: `templates/skill/call_transfer.md`.
 
 ---
 
@@ -91,6 +99,18 @@ Category(1) ← SkillTemplate(N) [직접 관계]
 - Category: 자연키(slug)
 - ConnectionTemplate: UUID, `serviceType+version` 유니크, JSON `spec`
 - SkillTemplate: UUID, `skillType+version` 유니크, nullable `connectionTemplateId`
+
+## Connection Template과 authType [대표님 2026-04-04]
+
+- **authType = 라우팅 키**: Admin은 저장만. Console(UI 분기)과 FC(런타임 인증)가 소비
+- **custom_api**: `api_key`, `bearer`, `basic` 3개. oauth2는 HTTP Request에서 안 씀
+- **oauth2**: 전용 Connection Template에서만 사용 (google_calendar, google_sheets 등). 서비스 1개 = Template 1개. 사용자는 scope을 모르므로 템플릿에 미리 설정
+- **`none`은 authType이 아님** — 스킬에서 Connection을 안 고르면 그게 none
+- **name 필드는 jsonSchema(spec) 내에 포함** — Connection Instance 식별용, 스킬에서 이름으로 선택
+- **Admin은 맥락 불필요**: 폼 구조(jsonSchema/uiSchema)만 정의. 인증 플로우 등 맥락은 Console이 알아야 함
+- **serviceType 용도 재검토 예정** — 전체 연동 후 결정
+- **카테고리는 용도 기반**: 벤더명(Google, Microsoft) 아닌 업계 표준 분류 — Productivity, CRM, Telephony, Custom 등
+- **템플릿 파일**: `templates/connection/`, `templates/skill/`. md 파일로 jsonSchema+uiSchema 관리
 
 ### 테스트 (Vitest, 21개 파일)
 
