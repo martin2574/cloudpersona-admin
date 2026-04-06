@@ -11,6 +11,10 @@
           {
             "type": "command",
             "command": ".claude/hooks/guard-db-access.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/guard-spec-required.sh"
           }
         ]
       },

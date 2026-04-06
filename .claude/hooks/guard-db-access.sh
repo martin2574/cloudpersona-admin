@@ -44,8 +44,8 @@ case "$TOOL_NAME" in
     if [[ -z "$COMMAND" ]]; then
       exit 0
     fi
-    # 허용: Backoffice 스키마 generate (ADR-019 예외)
-    if echo "$COMMAND" | grep -qE 'prisma generate[^|&;]*--schema=prisma/backoffice'; then
+    # 허용: Backoffice 스키마 Prisma 명령 (ADR-019 예외)
+    if echo "$COMMAND" | grep -qE '(npx )?prisma (generate|migrate|db).* --schema[= ]?prisma/backoffice'; then
       exit 0
     fi
     # 허용: 단순 조회용 명령 (ls/find/grep/cat 등 — 경로/내용에 prisma 문자열 포함)
