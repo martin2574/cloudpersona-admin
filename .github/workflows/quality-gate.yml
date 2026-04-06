@@ -14,10 +14,16 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - name: 로컬 패키지 스텁
         run: |
-          rm -f node_modules/@yourq/tokens
-          mkdir -p node_modules/@yourq/tokens
+          rm -f node_modules/@yourq/tokens node_modules/@yourq/ui
+          mkdir -p node_modules/@yourq/tokens node_modules/@yourq/ui
           echo '{"name":"@yourq/tokens","version":"0.0.0"}' > node_modules/@yourq/tokens/package.json
           touch node_modules/@yourq/tokens/styles.css
+          echo '{"name":"@yourq/ui","version":"0.0.0","main":"index.js","module":"index.js"}' > node_modules/@yourq/ui/package.json
+          cat > node_modules/@yourq/ui/index.js << 'STUB'
+          export const Button = () => null;
+          export const Input = () => null;
+          export const cn = (...args) => args.filter(Boolean).join(" ");
+          STUB
       - name: 린트
         run: npm run lint
       - name: 타입 검사
