@@ -3587,6 +3587,12 @@ export interface components {
                 [key: string]: unknown;
             };
             /**
+             * @default credential
+             * @example credential
+             * @enum {string}
+             */
+            authMethod: "credential" | "oauth2";
+            /**
              * Format: date-time
              * @example null
              */

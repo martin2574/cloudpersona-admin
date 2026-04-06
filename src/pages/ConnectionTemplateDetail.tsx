@@ -27,6 +27,7 @@ interface TemplateData extends AdminRecord {
   serviceType: string;
   version: string;
   categoryId: string;
+  authMethod: string;
   spec?: Spec;
   createdAt?: string;
 }
@@ -36,6 +37,7 @@ interface FormState {
   serviceType: string;
   version: string;
   categoryId: string;
+  authMethod: string;
 }
 
 const EMPTY_SPEC: Spec = {
@@ -55,6 +57,7 @@ export default function ConnectionTemplateDetail() {
     serviceType: "",
     version: "0.1.0",
     categoryId: "",
+    authMethod: "credential",
   });
   const [spec, setSpec] = useState<Spec>(EMPTY_SPEC);
   const [dirty, setDirty] = useState(false);
@@ -84,6 +87,7 @@ export default function ConnectionTemplateDetail() {
             serviceType: t.serviceType,
             version: t.version,
             categoryId: t.categoryId,
+            authMethod: t.authMethod || "credential",
           });
           setSpec(t.spec || EMPTY_SPEC);
           setLoading(false);
@@ -146,6 +150,7 @@ export default function ConnectionTemplateDetail() {
       serviceType: template.serviceType,
       version: template.version,
       categoryId: template.categoryId,
+      authMethod: template.authMethod || "credential",
     });
     setSpec(template.spec || EMPTY_SPEC);
     setDirty(false);
@@ -209,6 +214,17 @@ export default function ConnectionTemplateDetail() {
                     value={form.serviceType}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("serviceType", e.target.value)}
                   />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Auth Method</label>
+                  <select
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={form.authMethod}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormChange("authMethod", e.target.value)}
+                  >
+                    <option value="credential">credential</option>
+                    <option value="oauth2">oauth2</option>
+                  </select>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Version</label>

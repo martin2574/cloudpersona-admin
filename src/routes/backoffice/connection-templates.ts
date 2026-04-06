@@ -57,7 +57,7 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
 
   // 생성 (Layer 1/2 검증)
   router.post("/", async (req: Request, res: Response) => {
-    const { id, serviceType, name, description, version, categoryId, icon, spec } = req.body;
+    const { id, serviceType, name, description, version, categoryId, icon, spec, authMethod } = req.body;
 
     // spec 검증
     const validation = validateSpec(spec);
@@ -75,7 +75,17 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
 
     try {
       const template = await db.connectionTemplate.create({
-        data: { ...(id && { id }), serviceType, name, description: description || "", version, categoryId, icon: icon || null, spec },
+        data: {
+          ...(id && { id }),
+          serviceType,
+          name,
+          description: description || "",
+          version,
+          categoryId,
+          icon: icon || null,
+          spec,
+          authMethod: authMethod || "credential",
+        },
         include: { category: true },
       });
       res.status(201).json(template);
@@ -93,7 +103,7 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
   // 수정 (Layer 1/2 검증)
   router.put("/:id", async (req: Request, res: Response) => {
     const id = req.params.id as string;
-    const { serviceType, name, description, version, categoryId, icon, spec } = req.body;
+    const { serviceType, name, description, version, categoryId, icon, spec, authMethod } = req.body;
 
     const existing = await db.connectionTemplate.findUnique({ where: { id } });
     if (!existing) return res.status(404).json({ error: "Connection Template not found" });
@@ -127,6 +137,7 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
           ...(categoryId !== undefined && { categoryId }),
           ...(icon !== undefined && { icon: icon || null }),
           ...(spec !== undefined && { spec }),
+          ...(authMethod !== undefined && { authMethod }),
         },
         include: { category: true },
       });
