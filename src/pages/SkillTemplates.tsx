@@ -105,7 +105,7 @@ export default function SkillTemplates() {
         <Input
           placeholder="Search name, skillType..."
           value={search}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(e.target.value);
             setPage(1);
           }}
@@ -114,7 +114,7 @@ export default function SkillTemplates() {
         <select
           className="h-10 rounded-md border border-input bg-background px-3 text-sm"
           value={categoryId}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             setCategoryId(e.target.value);
             setPage(1);
           }}

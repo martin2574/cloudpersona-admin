@@ -114,7 +114,7 @@ export default function Members() {
         <Input
           placeholder="Search email, name..."
           value={search}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(e.target.value);
             setPage(1);
           }}

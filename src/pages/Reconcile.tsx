@@ -229,7 +229,7 @@ export default function Reconcile() {
         <div className="flex items-center gap-2">
           <select
             value={selectedEnv}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
               setSelectedEnv(e.target.value);
               setDryRunResult(null);
               setExecuteResult(null);

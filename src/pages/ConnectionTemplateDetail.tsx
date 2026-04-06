@@ -199,21 +199,21 @@ export default function ConnectionTemplateDetail() {
                   <label className="text-sm font-medium">Name</label>
                   <Input
                     value={form.name}
-                    onChange={(e) => handleFormChange("name", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("name", e.target.value)}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Service Type</label>
                   <Input
                     value={form.serviceType}
-                    onChange={(e) => handleFormChange("serviceType", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("serviceType", e.target.value)}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Version</label>
                   <Input
                     value={form.version}
-                    onChange={(e) => handleFormChange("version", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("version", e.target.value)}
                   />
                 </div>
                 <div>
@@ -221,7 +221,7 @@ export default function ConnectionTemplateDetail() {
                   <select
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                     value={form.categoryId}
-                    onChange={(e) => handleFormChange("categoryId", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormChange("categoryId", e.target.value)}
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>

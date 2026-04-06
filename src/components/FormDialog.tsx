@@ -77,7 +77,7 @@ export default function FormDialog({
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={(form[f.key] as string) ?? ""}
-                  onChange={(e) => handleChange(f.key, e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChange(f.key, e.target.value)}
                   required={f.required}
                   disabled={f.readOnly}
                 >
@@ -104,7 +104,7 @@ export default function FormDialog({
                 <Input
                   type={f.type || "text"}
                   value={(form[f.key] as string) ?? ""}
-                  onChange={(e) => handleChange(f.key, e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(f.key, e.target.value)}
                   required={f.required}
                   disabled={f.readOnly}
                   placeholder={f.placeholder}

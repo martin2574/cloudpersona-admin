@@ -83,7 +83,7 @@ export default function SpecBuilder({ jsonSchema, uiSchema, onChange }: SpecBuil
             <textarea
               className="w-full h-64 font-mono text-xs border rounded-md p-2 bg-muted/30"
               value={rawSchema}
-              onChange={(e) => handleRawChange("jsonSchema", e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleRawChange("jsonSchema", e.target.value)}
             />
           </div>
           <div>
@@ -91,7 +91,7 @@ export default function SpecBuilder({ jsonSchema, uiSchema, onChange }: SpecBuil
             <textarea
               className="w-full h-64 font-mono text-xs border rounded-md p-2 bg-muted/30"
               value={rawUiSchema}
-              onChange={(e) => handleRawChange("uiSchema", e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleRawChange("uiSchema", e.target.value)}
             />
           </div>
         </div>
