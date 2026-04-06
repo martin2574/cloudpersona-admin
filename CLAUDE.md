@@ -76,7 +76,7 @@ ESLint `naming-convention` + `no-explicit-any` 강제. [KB #166]
 
 ## 코드베이스 구조
 
-### 서버 (Express 5, server.js)
+### 서버 (Express 5, server.ts)
 
 | 경로 | 역할 | 데이터 소스 |
 |------|------|-----------|
@@ -97,7 +97,7 @@ ESLint `naming-convention` + `no-explicit-any` 강제. [KB #166]
 - Categories, ConnectionTemplates, ConnectionTemplateDetail, SkillTemplates, SkillTemplateDetail
 - Reconcile
 
-**API 클라이언트 2개**: `api.js`(Account/Member BFF), `backoffice-api.js`(템플릿 직접)
+**API 클라이언트 2개**: `api.ts`(Account/Member BFF), `backoffice-api.ts`(템플릿 직접)
 
 **핵심 컴포넌트**:
 - SpecBuilder: FormBuilder GUI + Raw JSON 양방향 동기화
