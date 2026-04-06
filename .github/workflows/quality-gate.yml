@@ -19,11 +19,7 @@ jobs:
           echo '{"name":"@yourq/tokens","version":"0.0.0"}' > node_modules/@yourq/tokens/package.json
           touch node_modules/@yourq/tokens/styles.css
           echo '{"name":"@yourq/ui","version":"0.0.0","main":"index.js","module":"index.js"}' > node_modules/@yourq/ui/package.json
-          cat > node_modules/@yourq/ui/index.js << 'STUB'
-          export const Button = () => null;
-          export const Input = () => null;
-          export const cn = (...args) => args.filter(Boolean).join(" ");
-          STUB
+          printf 'export const Button = () => null;\nexport const Input = () => null;\nexport const cn = (...args) => args.filter(Boolean).join(" ");\n' > node_modules/@yourq/ui/index.js
       - name: 린트
         run: npm run lint
       - name: 타입 검사
