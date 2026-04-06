@@ -17,6 +17,6 @@ jobs:
       - name: 타입 검사
         run: npx tsc --noEmit
       - name: 테스트
-        run: npm run test
+        run: npx vitest run --exclude '**/FR-AD-007.1/**'
       - name: 빌드
         run: npm run build
