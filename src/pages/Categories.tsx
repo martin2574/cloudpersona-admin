@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react";
-import { Button } from "@yourq/ui";
+import { Button } from "@/components/ui/button";
 import DataTable, { type DataTableColumn } from "@/components/DataTable";
 import FormDialog, { type FormDialogField } from "@/components/FormDialog";
 import {

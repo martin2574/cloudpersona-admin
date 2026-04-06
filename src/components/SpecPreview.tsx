@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import type { RJSFSchema, WidgetProps } from "@rjsf/utils";
-import { Button } from "@yourq/ui";
-import "@yourq/rjsf-theme/styles.css";
+import { Button } from "@/components/ui/button";
+import "@/styles/rjsf-styles.css";
 
 export interface SpecPreviewProps {
   jsonSchema: RJSFSchema;
