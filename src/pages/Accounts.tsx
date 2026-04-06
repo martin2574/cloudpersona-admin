@@ -111,7 +111,7 @@ export default function Accounts() {
         <Input
           placeholder="Search name, slug..."
           value={search}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(e.target.value);
             setPage(1);
           }}
@@ -120,7 +120,7 @@ export default function Accounts() {
         <select
           className="h-10 rounded-md border border-input bg-background px-3 text-sm"
           value={statusFilter}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             setStatusFilter(e.target.value);
             setPage(1);
           }}

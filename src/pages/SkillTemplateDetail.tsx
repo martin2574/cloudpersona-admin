@@ -222,21 +222,21 @@ export default function SkillTemplateDetail() {
                   <label className="text-sm font-medium">Name</label>
                   <Input
                     value={form.name}
-                    onChange={(e) => handleFormChange("name", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("name", e.target.value)}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Skill Type</label>
                   <Input
                     value={form.skillType}
-                    onChange={(e) => handleFormChange("skillType", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("skillType", e.target.value)}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Version</label>
                   <Input
                     value={form.version}
-                    onChange={(e) => handleFormChange("version", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("version", e.target.value)}
                   />
                 </div>
                 <div>
@@ -244,7 +244,7 @@ export default function SkillTemplateDetail() {
                   <select
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                     value={form.categoryId}
-                    onChange={(e) => handleFormChange("categoryId", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormChange("categoryId", e.target.value)}
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -258,7 +258,7 @@ export default function SkillTemplateDetail() {
                   <select
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                     value={form.connectionTemplateId}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                       handleFormChange("connectionTemplateId", e.target.value)
                     }
                   >

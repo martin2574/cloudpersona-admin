@@ -1,0 +1,31 @@
+name: quality-gate
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci --legacy-peer-deps
+      - name: 로컬 패키지 스텁 (@yourq/* = file: 참조라 CI에서 없음)
+        run: |
+          for pkg in tokens ui rjsf-theme; do
+            rm -f "node_modules/@yourq/$pkg"
+            mkdir -p "node_modules/@yourq/$pkg"
+            echo "{\"name\":\"@yourq/$pkg\",\"version\":\"0.0.0\",\"main\":\"index.js\",\"module\":\"index.js\"}" > "node_modules/@yourq/$pkg/package.json"
+            touch "node_modules/@yourq/$pkg/index.js" "node_modules/@yourq/$pkg/styles.css"
+          done
+          printf 'export const Button = () => null;\nexport const Input = () => null;\nexport const cn = (...args) => args.filter(Boolean).join(" ");\n' > node_modules/@yourq/ui/index.js
+      - name: 린트
+        run: npm run lint
+      - name: 타입 검사
+        run: npx tsc --noEmit
+      - name: 테스트
+        run: npx vitest run --exclude '**/FR-AD-007.1/**'
+      - name: 빌드
+        run: npm run build

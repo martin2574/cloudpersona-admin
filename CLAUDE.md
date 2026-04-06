@@ -60,6 +60,20 @@ Admin | 백오피스 개발 | Engineering | 보고: 박소장(CTO)
 - **템플릿 접근 = 자체 Prisma**: Backoffice DB(`yourq_backoffice.template` 스키마) 직접 CRUD
 - **API 타입 SSOT = `src/types/api-types.ts`** [KB #161, 2026-04-06]: API 호출 타입은 반드시 api-types.ts에서 import. 수동 `interface`/`type` 선언 금지. 재생성: `npm run gen:api`.
 
+## 표기법
+
+| 대상 | 표기법 | 예시 |
+|------|--------|------|
+| 변수·함수 | camelCase | `userId`, `getUserList` |
+| 타입·인터페이스·클래스 | PascalCase | `UserProfile`, `ApiError` |
+| React 컴포넌트 | PascalCase | `LoginButton` |
+| 상수 | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT` |
+| 파일·폴더 | kebab-case | `user-profile.ts` |
+| DB 컬럼 (Prisma @map) | snake_case | `account_id` |
+| 환경변수 | UPPER_SNAKE_CASE | `DATABASE_URL` |
+
+ESLint `naming-convention` + `no-explicit-any` 강제. [KB #166]
+
 ## 코드베이스 구조
 
 ### 서버 (Express 5, server.js)

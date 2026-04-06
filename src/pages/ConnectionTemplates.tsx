@@ -98,7 +98,7 @@ export default function ConnectionTemplates() {
         <Input
           placeholder="Search name, serviceType..."
           value={search}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(e.target.value);
             setPage(1);
           }}
@@ -107,7 +107,7 @@ export default function ConnectionTemplates() {
         <select
           className="h-10 rounded-md border border-input bg-background px-3 text-sm"
           value={categoryId}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             setCategoryId(e.target.value);
             setPage(1);
           }}
