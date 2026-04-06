@@ -12,6 +12,12 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci --legacy-peer-deps
+      - name: 로컬 패키지 스텁
+        run: |
+          rm -f node_modules/@yourq/tokens
+          mkdir -p node_modules/@yourq/tokens
+          echo '{"name":"@yourq/tokens","version":"0.0.0"}' > node_modules/@yourq/tokens/package.json
+          touch node_modules/@yourq/tokens/styles.css
       - name: 린트
         run: npm run lint
       - name: 타입 검사
