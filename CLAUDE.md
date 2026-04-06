@@ -58,6 +58,7 @@ Admin | 백오피스 개발 | Engineering | 보고: 박소장(CTO)
 - **설계 SSOT = KB #113** (arc42 아키텍처 문서)
 - **Account/Member 접근 = API Server 경유**: BFF 프록시 → `/api/internal/admin/*`
 - **템플릿 접근 = 자체 Prisma**: Backoffice DB(`yourq_backoffice.template` 스키마) 직접 CRUD
+- **API 타입 SSOT = `src/types/api-types.ts`** [KB #161, 2026-04-06]: API 호출 타입은 반드시 api-types.ts에서 import. 수동 `interface`/`type` 선언 금지. 재생성: `npm run gen:api`.
 
 ## 코드베이스 구조
 

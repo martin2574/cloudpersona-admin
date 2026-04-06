@@ -23,8 +23,8 @@ const RECONCILE_ENVS: Record<string, string | undefined> = {
 };
 
 app.use(express.json());
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- pino-http 제네릭 타입 호환 우회
 app.use(pinoHttp({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pino-http 제네릭 타입 호환 우회
   logger: logger as any,
   autoLogging: { ignore: (req: { url?: string }) => req.url === "/api/stats" },
   customLogLevel(_req: unknown, res: { statusCode?: number }, err: unknown) {

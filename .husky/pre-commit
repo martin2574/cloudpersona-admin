@@ -1,0 +1,5 @@
+npm run gen:api
+git diff --exit-code src/types/api-types.ts || {
+  echo "❌ api-types.ts가 stale입니다. 변경사항을 스테이지에 추가하고 재커밋하세요."
+  exit 1
+}

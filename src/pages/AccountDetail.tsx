@@ -71,7 +71,6 @@ export default function AccountDetail() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   async function handleStatusChange(formData: Record<string, unknown>) {
