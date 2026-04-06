@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "@yourq/ui";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import DataTable, { type DataTableColumn } from "@/components/DataTable";
 import FormDialog, { type FormDialogField } from "@/components/FormDialog";

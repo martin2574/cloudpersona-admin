@@ -1,4 +1,9 @@
-export { cn } from "@yourq/ui";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export function shortId(id: string | null | undefined): string {
   if (!id) return "—";

@@ -1,7 +1,7 @@
 import { useEffect, type ReactElement } from "react";
 import { useBlocker } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@yourq/ui";
+import { Button } from "@/components/ui/button";
 
 /**
  * dirty 상태일 때 페이지 이탈을 방지하는 훅.

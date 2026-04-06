@@ -1,17 +1,157 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "@yourq/tokens/styles.css";
 
-/* @yourq/ui 컴포넌트가 사용하는 Tailwind 클래스를 content scan에 포함 */
-@source "../../cloudpersona-ui/packages/ui/src";
-/* Admin 전용 토큰 — @yourq/tokens에 없는 것만 추가 */
 :root {
-  --destructive-foreground: #FFFFFF;
+    /* YourQ 팔레트 — 라이트 모드 (lucide.dev 기반) */
+    --background: #FFFFFF;
+    --background-secondary: #F6F6F7;
+    --foreground: #3C3C43;
+    --foreground-strong: #141518;
+    --muted-foreground: #67676C;
+    --border: #E2E2E3;
+    --primary: #DC5A5A;
+    --primary-foreground: #FFFFFF;
+    --primary-hover: #F67373;
+
+    /* shadcn/ui 매핑 */
+    --card: #FFFFFF;
+    --card-foreground: #3C3C43;
+    --popover: #FFFFFF;
+    --popover-foreground: #3C3C43;
+    --secondary: #F6F6F7;
+    --secondary-foreground: #141518;
+    --muted: #F6F6F7;
+    --accent: #F6F6F7;
+    --accent-foreground: #141518;
+    --destructive: #DC5A5A;
+    --destructive-foreground: #FFFFFF;
+    --input: #E2E2E3;
+    --ring: #DC5A5A;
+
+    /* 차트 */
+    --chart-1: oklch(0.809 0.105 251.813);
+    --chart-2: oklch(0.623 0.214 259.815);
+    --chart-3: oklch(0.546 0.245 262.881);
+    --chart-4: oklch(0.488 0.243 264.376);
+    --chart-5: oklch(0.424 0.199 265.638);
+
+    /* 레이아웃 */
+    --radius: 0.625rem;
+
+    /* 사이드바 */
+    --sidebar: #F6F6F7;
+    --sidebar-foreground: #3C3C43;
+    --sidebar-primary: #DC5A5A;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #F6F6F7;
+    --sidebar-accent-foreground: #141518;
+    --sidebar-border: #E2E2E3;
+    --sidebar-ring: #DC5A5A;
 }
+
 .dark {
-  --destructive-foreground: #FFFFFF;
+    /* YourQ 팔레트 — 다크 모드 (lucide.dev 기반) */
+    --background: #161618;
+    --background-secondary: #1B1B1F;
+    --foreground: #DFDFD6;
+    --foreground-strong: #FFFFFF;
+    --muted-foreground: #98989F;
+    --border: #2E2E32;
+    --primary: #F56565;
+    --primary-foreground: #FFFFFF;
+    --primary-hover: #F67373;
+
+    /* shadcn/ui 매핑 */
+    --card: #161618;
+    --card-foreground: #DFDFD6;
+    --popover: #1B1B1F;
+    --popover-foreground: #DFDFD6;
+    --secondary: #1B1B1F;
+    --secondary-foreground: #FFFFFF;
+    --muted: #1B1B1F;
+    --accent: #1B1B1F;
+    --accent-foreground: #FFFFFF;
+    --destructive: #F56565;
+    --destructive-foreground: #FFFFFF;
+    --input: #2E2E32;
+    --ring: #F56565;
+
+    /* 차트 */
+    --chart-1: oklch(0.809 0.105 251.813);
+    --chart-2: oklch(0.623 0.214 259.815);
+    --chart-3: oklch(0.546 0.245 262.881);
+    --chart-4: oklch(0.488 0.243 264.376);
+    --chart-5: oklch(0.424 0.199 265.638);
+
+    /* 사이드바 */
+    --sidebar: #1B1B1F;
+    --sidebar-foreground: #DFDFD6;
+    --sidebar-primary: #F56565;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #1B1B1F;
+    --sidebar-accent-foreground: #FFFFFF;
+    --sidebar-border: #2E2E32;
+    --sidebar-ring: #F56565;
 }
 
 @theme inline {
-  --color-destructive-foreground: var(--destructive-foreground);
+    --font-sans: var(--font-inter), var(--font-noto-sans-kr), ui-sans-serif, system-ui, sans-serif;
+    --color-background: var(--background);
+    --color-background-secondary: var(--background-secondary);
+    --color-foreground: var(--foreground);
+    --color-foreground-strong: var(--foreground-strong);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary-hover: var(--primary-hover);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+    /* Button 컴포넌트 토큰 */
+    --text-button-sm: 0.8rem;
+    --radius-button-xs: min(var(--radius-md), 10px);
+    --radius-button-sm: min(var(--radius-md), 12px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
