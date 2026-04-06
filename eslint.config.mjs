@@ -8,6 +8,18 @@ export default tseslint.config(
       // C2-1: any 사용 금지 (KB #161)
       "@typescript-eslint/no-explicit-any": "error",
 
+      // R3: 표기법 강제 (KB #166, ADR-040)
+      "@typescript-eslint/naming-convention": [
+        "error",
+        { selector: "variable", format: ["camelCase", "UPPER_CASE", "PascalCase"], leadingUnderscore: "allowDouble" },
+        { selector: "function", format: ["camelCase", "PascalCase"] },
+        { selector: "parameter", format: ["camelCase", "PascalCase"], leadingUnderscore: "allow" },
+        { selector: "typeLike", format: ["PascalCase"] },
+        { selector: "enumMember", format: ["UPPER_CASE"] },
+        { selector: "property", format: null },
+        { selector: "import", format: null },
+      ],
+
       // C2-2: API 수동 interface 선언 차단 (KB #161)
       "no-restricted-syntax": [
         "error",
