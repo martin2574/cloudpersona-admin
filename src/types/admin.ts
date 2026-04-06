@@ -5,11 +5,13 @@
 
 export type AdminRecord = Record<string, unknown> & { id: string };
 
+// eslint-disable-next-line no-restricted-syntax -- API Server 응답 스키마가 generic이라 수동 유지 (KB #161 §5.7)
 export interface PaginatedResponse<T = AdminRecord> {
   data: T[];
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
+// eslint-disable-next-line no-restricted-syntax -- Backoffice 자체 응답 포맷, API Server 소비 타입 아님
 export interface BackofficePaginatedResponse<T = AdminRecord> {
   data: T[];
   total: number;

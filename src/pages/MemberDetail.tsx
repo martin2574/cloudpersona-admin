@@ -48,7 +48,6 @@ export default function MemberDetail() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!member) return <p className="text-muted-foreground">Loading...</p>;
