@@ -69,6 +69,31 @@ export function deleteAccount(id: string): Promise<unknown> {
   return request(`/accounts/${id}`, { method: "DELETE" });
 }
 
+// ── OAuth Providers (BFF 프록시 → API Server) ──
+
+export function getOAuthProviders(): Promise<unknown> {
+  return request("/oauth-providers");
+}
+
+export function getOAuthProvider(id: string): Promise<unknown> {
+  return request(`/oauth-providers/${id}`);
+}
+
+export function createOAuthProvider(data: Record<string, unknown>): Promise<unknown> {
+  return request("/oauth-providers", { method: "POST", body: JSON.stringify(data) });
+}
+
+export function updateOAuthProvider(
+  id: string,
+  data: Record<string, unknown>,
+): Promise<unknown> {
+  return request(`/oauth-providers/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+}
+
+export function deleteOAuthProvider(id: string): Promise<unknown> {
+  return request(`/oauth-providers/${id}`, { method: "DELETE" });
+}
+
 // Dashboard 통계
 export function getStats(): Promise<unknown> {
   return request("/stats");

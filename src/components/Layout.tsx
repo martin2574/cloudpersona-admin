@@ -8,6 +8,7 @@ import {
   Moon,
   Blocks,
   Cable,
+  KeyRound,
   Wrench,
   RefreshCw,
   type LucideIcon,
@@ -39,6 +40,7 @@ const NAV: NavGroup[] = [
     items: [
       { to: "/backoffice/categories", label: "Categories", icon: Blocks },
       { to: "/backoffice/connection-templates", label: "Connections", icon: Cable },
+      { to: "/backoffice/oauth-providers", label: "OAuth Providers", icon: KeyRound },
       { to: "/backoffice/skill-templates", label: "Skills", icon: Wrench },
       { to: "/backoffice/reconcile", label: "Reconcile", icon: RefreshCw },
     ],

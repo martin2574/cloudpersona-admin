@@ -33,8 +33,10 @@ model ConnectionTemplate {
   categoryId   String    @map("category_id") @db.VarChar
   icon         String?   @db.VarChar
   spec         Json      @default("{}")
-  authMethod   String    @default("credential") @map("auth_method") @db.VarChar
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  authMethod      String    @default("credential") @map("auth_method") @db.VarChar
+  oauthProviderId String?   @map("oauth_provider_id") @db.Uuid
+  oauthScopes     String[]  @default([]) @map("oauth_scopes")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
   deprecatedAt DateTime? @map("deprecated_at") @db.Timestamptz
 

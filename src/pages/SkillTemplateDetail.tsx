@@ -69,7 +69,7 @@ export default function SkillTemplateDetail() {
   const [spec, setSpec] = useState<Spec>(EMPTY_SPEC);
   const [dirty, setDirty] = useState(false);
   const [loading, setLoading] = useState(!isNew);
-  const unsavedDialog = useUnsavedChanges(dirty);
+  const [unsavedDialog, allowNavigation] = useUnsavedChanges(dirty);
 
   useEffect(() => {
     if (isNew) {
@@ -144,6 +144,7 @@ export default function SkillTemplateDetail() {
       if (isNew) {
         const created = (await createSkillTemplate(payload)) as TemplateData;
         setDirty(false);
+        allowNavigation();
         toast.success("Created");
         navigate(`/backoffice/skill-templates/${created.id}`, { replace: true });
       } else if (id) {
