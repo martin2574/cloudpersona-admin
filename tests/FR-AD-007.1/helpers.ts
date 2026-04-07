@@ -37,6 +37,18 @@ export async function PUT(path: string, data: unknown) {
   return { status, body };
 }
 
+export async function PATCH(path: string, data: unknown) {
+  const res = await fetch(`${BASE}${path}`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(data),
+  });
+  const status = res.status;
+  if (status === 204) return { status, body: null };
+  const body = await res.json();
+  return { status, body };
+}
+
 export async function DELETE(path: string) {
   const res = await fetch(`${BASE}${path}`, {
     method: "DELETE",

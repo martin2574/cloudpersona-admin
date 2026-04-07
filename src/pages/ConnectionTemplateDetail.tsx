@@ -17,9 +17,18 @@ import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 import useUnsavedChanges from "@/hooks/useUnsavedChanges";
 import type { AdminRecord } from "@/types/admin";
+import { getOAuthProviders } from "@/api";
 
 interface Category extends AdminRecord {
   name?: string;
+}
+
+interface OAuthProviderOption {
+  id: string;
+  provider: string;
+  displayName: string;
+  scopesAvailable: string[];
+  isActive: boolean;
 }
 
 interface TemplateData extends AdminRecord {
@@ -28,6 +37,8 @@ interface TemplateData extends AdminRecord {
   version: string;
   categoryId: string;
   authMethod: string;
+  oauthProviderId?: string;
+  oauthScopes?: string[];
   spec?: Spec;
   createdAt?: string;
 }
@@ -38,6 +49,8 @@ interface FormState {
   version: string;
   categoryId: string;
   authMethod: string;
+  oauthProviderId: string;
+  oauthScopes: string[];
 }
 
 const EMPTY_SPEC: Spec = {
@@ -52,19 +65,30 @@ export default function ConnectionTemplateDetail() {
 
   const [template, setTemplate] = useState<TemplateData | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [oauthProviders, setOAuthProviders] = useState<OAuthProviderOption[]>([]);
   const [form, setForm] = useState<FormState>({
     name: "",
     serviceType: "",
     version: "0.1.0",
     categoryId: "",
     authMethod: "credential",
+    oauthProviderId: "",
+    oauthScopes: [],
   });
   const [spec, setSpec] = useState<Spec>(EMPTY_SPEC);
   const [dirty, setDirty] = useState(false);
   const [loading, setLoading] = useState(!isNew);
-  const unsavedDialog = useUnsavedChanges(dirty);
+  const [unsavedDialog, allowNavigation] = useUnsavedChanges(dirty);
 
   useEffect(() => {
+    // OAuth Providers 목록 로드
+    getOAuthProviders()
+      .then((r) => {
+        const list = (Array.isArray(r) ? r : ((r as { data?: unknown[] }).data ?? [])) as OAuthProviderOption[];
+        setOAuthProviders(list.filter((p) => p.isActive));
+      })
+      .catch(() => {}); // OAuth Provider 로드 실패해도 기존 폼에 영향 없음
+
     if (isNew) {
       // 신규: 카테고리만 로드하고 빈 폼 표시
       getCategories()
@@ -88,6 +112,8 @@ export default function ConnectionTemplateDetail() {
             version: t.version,
             categoryId: t.categoryId,
             authMethod: t.authMethod || "credential",
+            oauthProviderId: t.oauthProviderId || "",
+            oauthScopes: t.oauthScopes || [],
           });
           setSpec(t.spec || EMPTY_SPEC);
           setLoading(false);
@@ -96,10 +122,27 @@ export default function ConnectionTemplateDetail() {
     }
   }, [id, isNew]);
 
-  function handleFormChange(key: keyof FormState, value: string) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  function handleFormChange(key: keyof FormState, value: string | string[]) {
+    setForm((prev) => {
+      const next = { ...prev, [key]: value };
+      // authMethod가 credential로 변경되면 OAuth 필드 초기화
+      if (key === "authMethod" && value !== "oauth2") {
+        next.oauthProviderId = "";
+        next.oauthScopes = [];
+      }
+      // OAuth Provider가 변경되면 scopes 초기화
+      if (key === "oauthProviderId") {
+        next.oauthScopes = [];
+      }
+      return next;
+    });
     setDirty(true);
   }
+
+  const selectedProvider = oauthProviders.find(
+    (p) => p.id === form.oauthProviderId,
+  );
+  const availableScopes = selectedProvider?.scopesAvailable ?? [];
 
   function handleSpecChange(
     jsonSchema: Record<string, unknown>,
@@ -116,20 +159,38 @@ export default function ConnectionTemplateDetail() {
     if (!form.version.trim()) return toast.error("Version is required");
     if (!form.categoryId) return toast.error("Category is required");
 
+    // OAuth2 선택 시 추가 검증
+    if (form.authMethod === "oauth2") {
+      if (!form.oauthProviderId)
+        return toast.error("OAuth Provider is required");
+      if (form.oauthScopes.length === 0)
+        return toast.error("At least one OAuth Scope is required");
+    }
+
     // Spec 검증
     const validation = validateSpec(spec);
     if (!validation.valid) {
       return toast.error(`Spec validation failed: ${validation.errors[0].message}`);
     }
 
+    // payload 구성 — credential일 때는 OAuth 필드 null/빈 배열
+    const payload = {
+      ...form,
+      spec,
+      ...(form.authMethod !== "oauth2"
+        ? { oauthProviderId: null, oauthScopes: [] }
+        : {}),
+    };
+
     try {
       if (isNew) {
-        const created = (await createConnectionTemplate({ ...form, spec })) as TemplateData;
+        const created = (await createConnectionTemplate(payload)) as TemplateData;
         setDirty(false);
+        allowNavigation();
         toast.success("Created");
         navigate(`/backoffice/connection-templates/${created.id}`, { replace: true });
       } else if (id) {
-        const updated = (await updateConnectionTemplate(id, { ...form, spec })) as TemplateData;
+        const updated = (await updateConnectionTemplate(id, payload)) as TemplateData;
         setTemplate(updated);
         setDirty(false);
         toast.success("Saved");
@@ -151,6 +212,8 @@ export default function ConnectionTemplateDetail() {
       version: template.version,
       categoryId: template.categoryId,
       authMethod: template.authMethod || "credential",
+      oauthProviderId: template.oauthProviderId || "",
+      oauthScopes: template.oauthScopes || [],
     });
     setSpec(template.spec || EMPTY_SPEC);
     setDirty(false);
@@ -226,6 +289,53 @@ export default function ConnectionTemplateDetail() {
                     <option value="oauth2">oauth2</option>
                   </select>
                 </div>
+                {form.authMethod === "oauth2" && (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium">OAuth Provider</label>
+                      <select
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                        value={form.oauthProviderId}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                          handleFormChange("oauthProviderId", e.target.value)
+                        }
+                      >
+                        <option value="">Select Provider...</option>
+                        {oauthProviders.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.displayName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {form.oauthProviderId && availableScopes.length > 0 && (
+                      <div className="col-span-2">
+                        <label className="text-sm font-medium">OAuth Scopes</label>
+                        <div className="flex flex-wrap gap-2 mt-2 p-3 rounded-md border border-input bg-background">
+                          {availableScopes.map((scope) => (
+                            <label
+                              key={scope}
+                              className="inline-flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={form.oauthScopes.includes(scope)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  const next = e.target.checked
+                                    ? [...form.oauthScopes, scope]
+                                    : form.oauthScopes.filter((s) => s !== scope);
+                                  handleFormChange("oauthScopes", next);
+                                }}
+                                className="rounded border-input"
+                              />
+                              <span className="text-sm">{scope}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
                 <div>
                   <label className="text-sm font-medium">Version</label>
                   <Input

@@ -604,6 +604,181 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/internal/oauth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** OAuth 콜백 (Provider 리다이렉트) */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Authorization code (성공 시) */
+                    code?: string;
+                    /** @description State JWT */
+                    state: string;
+                    /** @description 에러 코드 (실패 시) */
+                    error?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OAuthCallbackResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/internal/oauth/authorize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** OAuth Authorization URL 생성 */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OAuthAuthorizeBody"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OAuthAuthorizeResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/internal/connection-instances/{id}/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** (Internal) Connection Instance credentials 조회 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ConnectionCredentialsResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/internal/workflows": {
         parameters: {
             query?: never;
@@ -3251,6 +3426,260 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/internal/admin/oauth-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** (Admin) OAuth Provider 목록 조회 */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description 활성 상태 필터 */
+                    isActive?: boolean | null;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** (Admin) OAuth Provider 생성 */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CreateOAuthProviderBody"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/internal/admin/oauth-providers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** (Admin) OAuth Provider 상세 조회 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** (Admin) OAuth Provider 삭제 */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /** (Admin) OAuth Provider 수정 */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UpdateOAuthProviderBody"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3346,6 +3775,28 @@ export interface components {
             token: string;
             /** @example NewStr0ngP@ss! */
             password: string;
+        };
+        OAuthCallbackResponse: {
+            html: string;
+        };
+        OAuthAuthorizeResponse: {
+            /** Format: uri */
+            authorizationUrl: string;
+        };
+        OAuthAuthorizeBody: {
+            /**
+             * Format: uuid
+             * @description OAuth 인증을 시작할 Connection Instance ID
+             * @example c1d2e3f4-5678-90ab-cdef-1234567890ab
+             */
+            connectionInstanceId: string;
+        };
+        ConnectionCredentialsResponse: {
+            /** @enum {string} */
+            type: "api_key" | "oauth2";
+            credentials: {
+                [key: string]: unknown;
+            };
         };
         CreateWorkflowBody: {
             /** @example Customer Support Flow */
@@ -3587,16 +4038,16 @@ export interface components {
                 [key: string]: unknown;
             };
             /**
-             * @default credential
-             * @example credential
-             * @enum {string}
-             */
-            authMethod: "credential" | "oauth2";
-            /**
              * Format: date-time
              * @example null
              */
             deprecatedAt?: string | null;
+            /**
+             * @default credential
+             * @example oauth2
+             * @enum {string}
+             */
+            authMethod: "credential" | "oauth2";
         };
         UpsertSkillTemplateBody: {
             /** @example api_request */
@@ -3631,6 +4082,87 @@ export interface components {
              * @example null
              */
             deprecatedAt?: string | null;
+        };
+        CreateOAuthProviderBody: {
+            /**
+             * @description Provider 고유 식별자 (UNIQUE)
+             * @example google
+             */
+            provider: string;
+            /** @example Google */
+            displayName: string;
+            /** @example xxxx.apps.googleusercontent.com */
+            clientId: string;
+            /** @example GOCSPX-xxxx */
+            clientSecret: string;
+            /**
+             * Format: uri
+             * @example https://accounts.google.com/o/oauth2/v2/auth
+             */
+            authUrl: string;
+            /**
+             * Format: uri
+             * @example https://oauth2.googleapis.com/token
+             */
+            tokenUrl: string;
+            /**
+             * Format: uri
+             * @example https://oauth2.googleapis.com/revoke
+             */
+            revokeUrl?: string | null;
+            /**
+             * @example [
+             *       "https://www.googleapis.com/auth/calendar.readonly"
+             *     ]
+             */
+            scopesAvailable: string[];
+            /**
+             * Format: uri
+             * @example https://api.yourq.ai/api/internal/oauth/callback
+             */
+            redirectUriBase: string;
+            /**
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+        };
+        UpdateOAuthProviderBody: {
+            /** @example Google Workspace */
+            displayName?: string;
+            /** @example new-client-id */
+            clientId?: string;
+            /** @example new-secret */
+            clientSecret?: string;
+            /**
+             * Format: uri
+             * @example https://accounts.google.com/o/oauth2/v2/auth
+             */
+            authUrl?: string;
+            /**
+             * Format: uri
+             * @example https://oauth2.googleapis.com/token
+             */
+            tokenUrl?: string;
+            /**
+             * Format: uri
+             * @example null
+             */
+            revokeUrl?: string | null;
+            /**
+             * @example [
+             *       "email",
+             *       "profile"
+             *     ]
+             */
+            scopesAvailable?: string[];
+            /**
+             * Format: uri
+             * @example https://api.yourq.ai/api/internal/oauth/callback
+             */
+            redirectUriBase?: string;
+            /** @example false */
+            isActive?: boolean;
         };
     };
     responses: never;

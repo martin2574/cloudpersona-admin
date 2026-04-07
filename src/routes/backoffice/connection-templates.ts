@@ -57,7 +57,7 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
 
   // 생성 (Layer 1/2 검증)
   router.post("/", async (req: Request, res: Response) => {
-    const { id, serviceType, name, description, version, categoryId, icon, spec, authMethod } = req.body;
+    const { id, serviceType, name, description, version, categoryId, icon, spec, authMethod, oauthProviderId, oauthScopes } = req.body;
 
     // spec 검증
     const validation = validateSpec(spec);
@@ -85,6 +85,8 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
           icon: icon || null,
           spec,
           authMethod: authMethod || "credential",
+          oauthProviderId: oauthProviderId || null,
+          oauthScopes: oauthScopes || [],
         },
         include: { category: true },
       });
@@ -103,7 +105,7 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
   // 수정 (Layer 1/2 검증)
   router.put("/:id", async (req: Request, res: Response) => {
     const id = req.params.id as string;
-    const { serviceType, name, description, version, categoryId, icon, spec, authMethod } = req.body;
+    const { serviceType, name, description, version, categoryId, icon, spec, authMethod, oauthProviderId, oauthScopes } = req.body;
 
     const existing = await db.connectionTemplate.findUnique({ where: { id } });
     if (!existing) return res.status(404).json({ error: "Connection Template not found" });
@@ -138,6 +140,8 @@ export default function connectionTemplatesRouter(db: PrismaClient): Router {
           ...(icon !== undefined && { icon: icon || null }),
           ...(spec !== undefined && { spec }),
           ...(authMethod !== undefined && { authMethod }),
+          ...(oauthProviderId !== undefined && { oauthProviderId: oauthProviderId || null }),
+          ...(oauthScopes !== undefined && { oauthScopes }),
         },
         include: { category: true },
       });
