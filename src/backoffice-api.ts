@@ -1,9 +1,16 @@
-const BASE = "/api/backoffice";
+const BASE = "/api";
 const SECRET = import.meta.env.VITE_ADMIN_API_SECRET as string | undefined;
 
-interface BackofficeError {
-  error?: string;
+interface ApiError {
+  error?: string | { code?: string; message?: string };
   errors?: Array<{ message?: string }>;
+}
+
+function extractErrorMessage(err: ApiError, fallback: string): string {
+  if (typeof err.error === "string") return err.error;
+  if (typeof err.error === "object" && err.error?.message) return err.error.message;
+  if (err.errors?.[0]?.message) return err.errors[0].message;
+  return fallback;
 }
 
 async function request(path: string, options: RequestInit = {}): Promise<unknown> {
@@ -15,8 +22,8 @@ async function request(path: string, options: RequestInit = {}): Promise<unknown
     ...options,
   });
   if (!res.ok) {
-    const err = (await res.json().catch(() => ({}))) as BackofficeError;
-    throw new Error(err.error || err.errors?.[0]?.message || res.statusText);
+    const err = (await res.json().catch(() => ({}))) as ApiError;
+    throw new Error(extractErrorMessage(err, res.statusText));
   }
   if (res.status === 204) return null;
   return res.json();
@@ -39,11 +46,7 @@ export function getCategory(id: string): Promise<unknown> {
   return request(`/categories/${id}`);
 }
 
-export function createCategory(data: Record<string, unknown>): Promise<unknown> {
-  return request("/categories", { method: "POST", body: JSON.stringify(data) });
-}
-
-export function updateCategory(
+export function upsertCategory(
   id: string,
   data: Record<string, unknown>,
 ): Promise<unknown> {
@@ -71,16 +74,7 @@ export function getConnectionTemplate(id: string): Promise<unknown> {
   return request(`/connection-templates/${id}`);
 }
 
-export function createConnectionTemplate(
-  data: Record<string, unknown>,
-): Promise<unknown> {
-  return request("/connection-templates", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
-
-export function updateConnectionTemplate(
+export function upsertConnectionTemplate(
   id: string,
   data: Record<string, unknown>,
 ): Promise<unknown> {
@@ -109,11 +103,7 @@ export function getSkillTemplate(id: string): Promise<unknown> {
   return request(`/skill-templates/${id}`);
 }
 
-export function createSkillTemplate(data: Record<string, unknown>): Promise<unknown> {
-  return request("/skill-templates", { method: "POST", body: JSON.stringify(data) });
-}
-
-export function updateSkillTemplate(
+export function upsertSkillTemplate(
   id: string,
   data: Record<string, unknown>,
 ): Promise<unknown> {
@@ -125,24 +115,4 @@ export function updateSkillTemplate(
 
 export function deleteSkillTemplate(id: string): Promise<unknown> {
   return request(`/skill-templates/${id}`, { method: "DELETE" });
-}
-
-// ── Reconciliation ──
-
-export function getReconcileEnvs(): Promise<unknown> {
-  return request("/reconcile/envs");
-}
-
-export function reconcileDryRun(env: string): Promise<unknown> {
-  return request("/reconcile", {
-    method: "POST",
-    body: JSON.stringify({ env, mode: "dry-run" }),
-  });
-}
-
-export function reconcileExecute(env: string): Promise<unknown> {
-  return request("/reconcile", {
-    method: "POST",
-    body: JSON.stringify({ env, mode: "execute" }),
-  });
 }

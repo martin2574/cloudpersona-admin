@@ -8,8 +8,7 @@ import SpecBuilder from "@/components/SpecBuilder";
 import SpecPreview from "@/components/SpecPreview";
 import {
   getConnectionTemplate,
-  createConnectionTemplate,
-  updateConnectionTemplate,
+  upsertConnectionTemplate,
   getCategories,
 } from "@/backoffice-api";
 import { validateSpec, type Spec } from "@/lib/schema-validator";
@@ -34,6 +33,7 @@ interface OAuthProviderOption {
 interface TemplateData extends AdminRecord {
   name: string;
   serviceType: string;
+  description?: string;
   version: string;
   categoryId: string;
   authMethod: string;
@@ -46,6 +46,7 @@ interface TemplateData extends AdminRecord {
 interface FormState {
   name: string;
   serviceType: string;
+  description: string;
   version: string;
   categoryId: string;
   authMethod: string;
@@ -69,6 +70,7 @@ export default function ConnectionTemplateDetail() {
   const [form, setForm] = useState<FormState>({
     name: "",
     serviceType: "",
+    description: "",
     version: "0.1.0",
     categoryId: "",
     authMethod: "credential",
@@ -109,6 +111,7 @@ export default function ConnectionTemplateDetail() {
           setForm({
             name: t.name,
             serviceType: t.serviceType,
+            description: t.description || "",
             version: t.version,
             categoryId: t.categoryId,
             authMethod: t.authMethod || "credential",
@@ -184,13 +187,14 @@ export default function ConnectionTemplateDetail() {
 
     try {
       if (isNew) {
-        const created = (await createConnectionTemplate(payload)) as TemplateData;
+        const newId = crypto.randomUUID();
+        const created = (await upsertConnectionTemplate(newId, payload)) as TemplateData;
         setDirty(false);
         allowNavigation();
         toast.success("Created");
         navigate(`/backoffice/connection-templates/${created.id}`, { replace: true });
       } else if (id) {
-        const updated = (await updateConnectionTemplate(id, payload)) as TemplateData;
+        const updated = (await upsertConnectionTemplate(id, payload)) as TemplateData;
         setTemplate(updated);
         setDirty(false);
         toast.success("Saved");
@@ -209,6 +213,7 @@ export default function ConnectionTemplateDetail() {
     setForm({
       name: template.name,
       serviceType: template.serviceType,
+      description: template.description || "",
       version: template.version,
       categoryId: template.categoryId,
       authMethod: template.authMethod || "credential",

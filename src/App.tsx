@@ -12,7 +12,6 @@ import SkillTemplates from "@/pages/SkillTemplates";
 import SkillTemplateDetail from "@/pages/SkillTemplateDetail";
 import OAuthProviders from "@/pages/OAuthProviders";
 import OAuthProviderDetail from "@/pages/OAuthProviderDetail";
-import Reconcile from "@/pages/Reconcile";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +32,6 @@ const router = createBrowserRouter([
       { path: "/backoffice/oauth-providers/:id", element: <OAuthProviderDetail /> },
       { path: "/backoffice/skill-templates", element: <SkillTemplates /> },
       { path: "/backoffice/skill-templates/:id", element: <SkillTemplateDetail /> },
-      { path: "/backoffice/reconcile", element: <Reconcile /> },
     ],
   },
 ]);

@@ -9,7 +9,7 @@ import {
   getCategories,
   type TemplateListParams,
 } from "@/backoffice-api";
-import type { AdminRecord, BackofficePaginatedResponse } from "@/types/admin";
+import type { AdminRecord, PaginatedResponse } from "@/types/admin";
 import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -58,9 +58,14 @@ export default function ConnectionTemplates() {
     if (categoryId) params.categoryId = categoryId;
     getConnectionTemplates(params)
       .then((r) => {
-        const response = r as BackofficePaginatedResponse;
-        setData(response.data);
-        setTotal(response.total);
+        if (Array.isArray(r)) {
+          setData(r as AdminRecord[]);
+          setTotal(r.length);
+        } else {
+          const response = r as PaginatedResponse;
+          setData(response.data);
+          setTotal(response.pagination.total);
+        }
       })
       .catch((e: Error) => toast.error(e.message));
   }, [page, search, categoryId]);
