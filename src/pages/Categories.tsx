@@ -4,8 +4,7 @@ import DataTable, { type DataTableColumn } from "@/components/DataTable";
 import FormDialog, { type FormDialogField } from "@/components/FormDialog";
 import {
   getCategories,
-  createCategory,
-  updateCategory,
+  upsertCategory,
   deleteCategory,
 } from "@/backoffice-api";
 import type { AdminRecord } from "@/types/admin";
@@ -62,13 +61,9 @@ export default function Categories() {
         ...formData,
         sortOrder: parseInt(String(formData.sortOrder)) || 0,
       };
-      if (dialog.editing) {
-        await updateCategory(dialog.editing.id, payload);
-        toast.success("Category updated");
-      } else {
-        await createCategory(payload);
-        toast.success("Category created");
-      }
+      const id = dialog.editing ? dialog.editing.id : (formData.id as string);
+      await upsertCategory(id, payload);
+      toast.success(dialog.editing ? "Category updated" : "Category created");
       setDialog({ open: false, editing: null });
       load();
     } catch (e) {

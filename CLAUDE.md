@@ -46,6 +46,15 @@ Admin | 백오피스 개발 | Engineering | 보고: 박소장(CTO)
 
 정답 패턴: `templates/connection/custom_api.md`. 적용 사례: `templates/skill/call_transfer.md`.
 
+## D2 다이어그램 label에 중괄호 금지 [2026-04-08]
+
+RTM 설명에 D2 시퀀스 다이어그램 작성 시, 연결선 label에 `{}`를 사용하면 D2가 블록 문법으로 해석하여 렌더링 에러가 발생한다. `{resource}` 같은 변수 표현은 `[resource]` 또는 서술형으로 대체.
+
+```
+# ❌ 에러: bff -> api: /admin/{resource} (GET/POST)
+# ✅ 정상: bff -> api: /admin/categories 등
+```
+
 ---
 
 # 5. 지식 — 이 직원만 필요한 사실
@@ -131,3 +140,12 @@ Category(1) ← SkillTemplate(N) [직접 관계]
 
 - **FR-AD-007.1**: Backoffice CRUD 통합테스트 (spec 검증, CRUD, FK 무결성)
 - **FR-AD-007.3**: Reconciliation 단위테스트 (diff, FK 순서, 실패 멈춤, UI 정적검증)
+
+---
+
+## 해야할일
+
+### ADR-035 단일 DB 전환
+
+- Category status 컬럼 — API Server에서 개발 중, 대표님이 완료 알려주면 Admin 대응
+- CLAUDE.md §5 코드베이스 구조 현행화 — FR-AD-007.5 코딩 완료 후 (현재 이원화 구조 기준으로 기술됨)

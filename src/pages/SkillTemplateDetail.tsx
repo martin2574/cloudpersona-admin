@@ -8,8 +8,7 @@ import SpecBuilder from "@/components/SpecBuilder";
 import SpecPreview from "@/components/SpecPreview";
 import {
   getSkillTemplate,
-  createSkillTemplate,
-  updateSkillTemplate,
+  upsertSkillTemplate,
   getCategories,
   getConnectionTemplates,
 } from "@/backoffice-api";
@@ -17,7 +16,7 @@ import { validateSpec, type Spec } from "@/lib/schema-validator";
 import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 import useUnsavedChanges from "@/hooks/useUnsavedChanges";
-import type { AdminRecord, BackofficePaginatedResponse } from "@/types/admin";
+import type { AdminRecord, PaginatedResponse } from "@/types/admin";
 
 interface Category extends AdminRecord {
   name?: string;
@@ -31,6 +30,7 @@ interface ConnectionTemplate extends AdminRecord {
 interface TemplateData extends AdminRecord {
   name: string;
   skillType: string;
+  description?: string;
   version: string;
   categoryId: string;
   connectionTemplateId?: string | null;
@@ -41,6 +41,7 @@ interface TemplateData extends AdminRecord {
 interface FormState {
   name: string;
   skillType: string;
+  description: string;
   version: string;
   categoryId: string;
   connectionTemplateId: string;
@@ -62,6 +63,7 @@ export default function SkillTemplateDetail() {
   const [form, setForm] = useState<FormState>({
     name: "",
     skillType: "",
+    description: "",
     version: "0.1.0",
     categoryId: "",
     connectionTemplateId: "",
@@ -78,7 +80,7 @@ export default function SkillTemplateDetail() {
         .then(([cats, conns]) => {
           const catsList = (cats ?? []) as Category[];
           setCategories(catsList);
-          setConnections((conns as BackofficePaginatedResponse<ConnectionTemplate>).data);
+          setConnections(Array.isArray(conns) ? conns as ConnectionTemplate[] : (conns as PaginatedResponse<ConnectionTemplate>).data);
           if (catsList.length > 0)
             setForm((prev) => ({ ...prev, categoryId: catsList[0].id }));
         })
@@ -94,10 +96,11 @@ export default function SkillTemplateDetail() {
           const t = tmpl as TemplateData;
           setTemplate(t);
           setCategories((cats ?? []) as Category[]);
-          setConnections((conns as BackofficePaginatedResponse<ConnectionTemplate>).data);
+          setConnections(Array.isArray(conns) ? conns as ConnectionTemplate[] : (conns as PaginatedResponse<ConnectionTemplate>).data);
           setForm({
             name: t.name,
             skillType: t.skillType,
+            description: t.description || "",
             version: t.version,
             categoryId: t.categoryId,
             connectionTemplateId: t.connectionTemplateId || "",
@@ -142,13 +145,14 @@ export default function SkillTemplateDetail() {
         spec,
       };
       if (isNew) {
-        const created = (await createSkillTemplate(payload)) as TemplateData;
+        const newId = crypto.randomUUID();
+        const created = (await upsertSkillTemplate(newId, payload)) as TemplateData;
         setDirty(false);
         allowNavigation();
         toast.success("Created");
         navigate(`/backoffice/skill-templates/${created.id}`, { replace: true });
       } else if (id) {
-        const updated = (await updateSkillTemplate(id, payload)) as TemplateData;
+        const updated = (await upsertSkillTemplate(id, payload)) as TemplateData;
         setTemplate(updated);
         setDirty(false);
         toast.success("Saved");
@@ -167,6 +171,7 @@ export default function SkillTemplateDetail() {
     setForm({
       name: template.name,
       skillType: template.skillType,
+      description: template.description || "",
       version: template.version,
       categoryId: template.categoryId,
       connectionTemplateId: template.connectionTemplateId || "",
@@ -232,6 +237,14 @@ export default function SkillTemplateDetail() {
                   <Input
                     value={form.skillType}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("skillType", e.target.value)}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="text-sm font-medium">Description</label>
+                  <Input
+                    value={form.description}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("description", e.target.value)}
+                    placeholder="템플릿 설명"
                   />
                 </div>
                 <div>

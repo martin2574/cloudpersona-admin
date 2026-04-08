@@ -33,6 +33,7 @@ export async function PUT(path: string, data: unknown) {
     body: JSON.stringify(data),
   });
   const status = res.status;
+  if (status === 204) return { status, body: null };
   const body = await res.json();
   return { status, body };
 }

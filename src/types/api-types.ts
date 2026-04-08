@@ -2156,7 +2156,6 @@ export interface paths {
             parameters: {
                 query?: {
                     categoryId?: string;
-                    includeDeprecated?: boolean | null;
                 };
                 header?: never;
                 path?: never;
@@ -2273,7 +2272,6 @@ export interface paths {
             parameters: {
                 query?: {
                     categoryId?: string;
-                    includeDeprecated?: boolean | null;
                 };
                 header?: never;
                 path?: never;
@@ -3320,7 +3318,6 @@ export interface paths {
             parameters: {
                 query?: {
                     categoryId?: string;
-                    includeDeprecated?: boolean | null;
                 };
                 header?: never;
                 path?: never;
@@ -3379,7 +3376,6 @@ export interface paths {
             parameters: {
                 query?: {
                     categoryId?: string;
-                    includeDeprecated?: boolean | null;
                 };
                 header?: never;
                 path?: never;
@@ -3579,7 +3575,53 @@ export interface paths {
                 };
             };
         };
-        put?: never;
+        /** (Admin) OAuth Provider 업서트 */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UpsertOAuthProviderBody"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
         post?: never;
         /** (Admin) OAuth Provider 삭제 */
         delete: {
@@ -4048,6 +4090,21 @@ export interface components {
              * @enum {string}
              */
             authMethod: "credential" | "oauth2";
+            /**
+             * Format: uuid
+             * @example null
+             */
+            oauthProviderId?: string | null;
+            /**
+             * @default []
+             * @example [
+             *       "openid",
+             *       "email"
+             *     ]
+             */
+            oauthScopes: string[];
+            /** @enum {string} */
+            status?: "draft" | "published" | "deprecated";
         };
         UpsertSkillTemplateBody: {
             /** @example api_request */
@@ -4082,6 +4139,54 @@ export interface components {
              * @example null
              */
             deprecatedAt?: string | null;
+            /** @enum {string} */
+            status?: "draft" | "published" | "deprecated";
+        };
+        UpsertOAuthProviderBody: {
+            /**
+             * @description Provider 고유 식별자
+             * @example google
+             */
+            provider: string;
+            /** @example Google */
+            displayName: string;
+            /** @example xxxx.apps.googleusercontent.com */
+            clientId: string;
+            /** @example GOCSPX-xxxx */
+            clientSecret: string;
+            /**
+             * Format: uri
+             * @example https://accounts.google.com/o/oauth2/v2/auth
+             */
+            authUrl: string;
+            /**
+             * Format: uri
+             * @example https://oauth2.googleapis.com/token
+             */
+            tokenUrl: string;
+            /**
+             * Format: uri
+             * @example https://oauth2.googleapis.com/revoke
+             */
+            revokeUrl?: string | null;
+            /**
+             * @example [
+             *       "spreadsheets",
+             *       "calendar",
+             *       "drive"
+             *     ]
+             */
+            scopesAvailable: string[];
+            /**
+             * Format: uri
+             * @example https://api.yourq.ai/api/internal/oauth/callback
+             */
+            redirectUriBase: string;
+            /**
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
         };
         CreateOAuthProviderBody: {
             /**

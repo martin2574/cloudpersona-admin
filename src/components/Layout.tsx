@@ -10,7 +10,6 @@ import {
   Cable,
   KeyRound,
   Wrench,
-  RefreshCw,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -42,7 +41,6 @@ const NAV: NavGroup[] = [
       { to: "/backoffice/connection-templates", label: "Connections", icon: Cable },
       { to: "/backoffice/oauth-providers", label: "OAuth Providers", icon: KeyRound },
       { to: "/backoffice/skill-templates", label: "Skills", icon: Wrench },
-      { to: "/backoffice/reconcile", label: "Reconcile", icon: RefreshCw },
     ],
   },
 ];
