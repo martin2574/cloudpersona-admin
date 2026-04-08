@@ -3575,7 +3575,7 @@ export interface paths {
                 };
             };
         };
-        /** (Admin) OAuth Provider 업서트 (Reconcile용) */
+        /** (Admin) OAuth Provider 업서트 */
         put: {
             parameters: {
                 query?: never;

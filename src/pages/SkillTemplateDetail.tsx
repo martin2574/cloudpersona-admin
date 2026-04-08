@@ -239,6 +239,14 @@ export default function SkillTemplateDetail() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("skillType", e.target.value)}
                   />
                 </div>
+                <div className="col-span-2">
+                  <label className="text-sm font-medium">Description</label>
+                  <Input
+                    value={form.description}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormChange("description", e.target.value)}
+                    placeholder="템플릿 설명"
+                  />
+                </div>
                 <div>
                   <label className="text-sm font-medium">Version</label>
                   <Input
